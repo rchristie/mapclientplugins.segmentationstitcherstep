@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'segmentationstitcherwidget.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -28,7 +28,7 @@ class Ui_SegmentationStitcherWidget(object):
         if not SegmentationStitcherWidget.objectName():
             SegmentationStitcherWidget.setObjectName(u"SegmentationStitcherWidget")
         SegmentationStitcherWidget.resize(1137, 878)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(SegmentationStitcherWidget.sizePolicy().hasHeightForWidth())
@@ -42,11 +42,11 @@ class Ui_SegmentationStitcherWidget(object):
         self.dockWidget.setObjectName(u"dockWidget")
         sizePolicy.setHeightForWidth(self.dockWidget.sizePolicy().hasHeightForWidth())
         self.dockWidget.setSizePolicy(sizePolicy)
-        self.dockWidget.setFeatures(QDockWidget.DockWidgetFloatable|QDockWidget.DockWidgetMovable)
-        self.dockWidget.setAllowedAreas(Qt.AllDockWidgetAreas)
+        self.dockWidget.setFeatures(QDockWidget.DockWidgetFeature.DockWidgetFloatable|QDockWidget.DockWidgetFeature.DockWidgetMovable)
+        self.dockWidget.setAllowedAreas(Qt.DockWidgetArea.AllDockWidgetAreas)
         self.dockWidgetContents = QWidget()
         self.dockWidgetContents.setObjectName(u"dockWidgetContents")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.dockWidgetContents.sizePolicy().hasHeightForWidth())
@@ -75,20 +75,20 @@ class Ui_SegmentationStitcherWidget(object):
         self.stepedit_scrollArea.setObjectName(u"stepedit_scrollArea")
         sizePolicy.setHeightForWidth(self.stepedit_scrollArea.sizePolicy().hasHeightForWidth())
         self.stepedit_scrollArea.setSizePolicy(sizePolicy)
-        self.stepedit_scrollArea.setFrameShape(QFrame.NoFrame)
-        self.stepedit_scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.stepedit_scrollArea.setFrameShape(QFrame.Shape.NoFrame)
+        self.stepedit_scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.stepedit_scrollArea.setWidgetResizable(True)
         self.stepedit_scrollAreaWidgetContents = QWidget()
         self.stepedit_scrollAreaWidgetContents.setObjectName(u"stepedit_scrollAreaWidgetContents")
-        self.stepedit_scrollAreaWidgetContents.setGeometry(QRect(0, -23, 343, 92))
+        self.stepedit_scrollAreaWidgetContents.setGeometry(QRect(0, 0, 358, 94))
         self.verticalLayout_3 = QVBoxLayout(self.stepedit_scrollAreaWidgetContents)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.segment_frame = QFrame(self.stepedit_scrollAreaWidgetContents)
         self.segment_frame.setObjectName(u"segment_frame")
-        self.segment_frame.setFrameShape(QFrame.StyledPanel)
-        self.segment_frame.setFrameShadow(QFrame.Raised)
+        self.segment_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.segment_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_5 = QVBoxLayout(self.segment_frame)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
@@ -96,7 +96,7 @@ class Ui_SegmentationStitcherWidget(object):
         self.segmentTransformation_groupBox.setObjectName(u"segmentTransformation_groupBox")
         self.formLayout = QFormLayout(self.segmentTransformation_groupBox)
         self.formLayout.setObjectName(u"formLayout")
-        self.formLayout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
+        self.formLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
         self.segmentRotation_label = QLabel(self.segmentTransformation_groupBox)
         self.segmentRotation_label.setObjectName(u"segmentRotation_label")
 
@@ -138,15 +138,15 @@ class Ui_SegmentationStitcherWidget(object):
         self.connectionsControls_frame.setObjectName(u"connectionsControls_frame")
         sizePolicy.setHeightForWidth(self.connectionsControls_frame.sizePolicy().hasHeightForWidth())
         self.connectionsControls_frame.setSizePolicy(sizePolicy)
-        self.connectionsControls_frame.setFrameShape(QFrame.StyledPanel)
-        self.connectionsControls_frame.setFrameShadow(QFrame.Raised)
+        self.connectionsControls_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.connectionsControls_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_11 = QHBoxLayout(self.connectionsControls_frame)
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
-        self.conntectionsNew_pushButton = QPushButton(self.connectionsControls_frame)
-        self.conntectionsNew_pushButton.setObjectName(u"conntectionsNew_pushButton")
+        self.connectionsNew_pushButton = QPushButton(self.connectionsControls_frame)
+        self.connectionsNew_pushButton.setObjectName(u"connectionsNew_pushButton")
 
-        self.horizontalLayout_11.addWidget(self.conntectionsNew_pushButton)
+        self.horizontalLayout_11.addWidget(self.connectionsNew_pushButton)
 
         self.connectionsDelete_pushButton = QPushButton(self.connectionsControls_frame)
         self.connectionsDelete_pushButton.setObjectName(u"connectionsDelete_pushButton")
@@ -171,7 +171,7 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.controls_tabWidget = QTabWidget(self.dockWidgetContents)
         self.controls_tabWidget.setObjectName(u"controls_tabWidget")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.controls_tabWidget.sizePolicy().hasHeightForWidth())
@@ -182,8 +182,8 @@ class Ui_SegmentationStitcherWidget(object):
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.displayMisc_frame = QFrame(self.display_tab)
         self.displayMisc_frame.setObjectName(u"displayMisc_frame")
-        self.displayMisc_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayMisc_frame.setFrameShadow(QFrame.Raised)
+        self.displayMisc_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayMisc_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_8 = QHBoxLayout(self.displayMisc_frame)
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
         self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
@@ -192,8 +192,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayMarker_frame = QFrame(self.display_tab)
         self.displayMarker_frame.setObjectName(u"displayMarker_frame")
-        self.displayMarker_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayMarker_frame.setFrameShadow(QFrame.Raised)
+        self.displayMarker_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayMarker_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout = QGridLayout(self.displayMarker_frame)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -215,14 +215,44 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.verticalLayout_7.addWidget(self.displayMarker_frame)
 
+        self.displayNode_frame = QFrame(self.display_tab)
+        self.displayNode_frame.setObjectName(u"displayNode_frame")
+        self.displayNode_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayNode_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_12 = QHBoxLayout(self.displayNode_frame)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
+        self.displayNodePoints_checkBox = QCheckBox(self.displayNode_frame)
+        self.displayNodePoints_checkBox.setObjectName(u"displayNodePoints_checkBox")
+
+        self.horizontalLayout_12.addWidget(self.displayNodePoints_checkBox)
+
+        self.displayNodeNumbers_checkBox = QCheckBox(self.displayNode_frame)
+        self.displayNodeNumbers_checkBox.setObjectName(u"displayNodeNumbers_checkBox")
+
+        self.horizontalLayout_12.addWidget(self.displayNodeNumbers_checkBox)
+
+        self.displayNodeGroup_label = QLabel(self.displayNode_frame)
+        self.displayNodeGroup_label.setObjectName(u"displayNodeGroup_label")
+
+        self.horizontalLayout_12.addWidget(self.displayNodeGroup_label)
+
+        self.displayNodeGroup_comboBox = QComboBox(self.displayNode_frame)
+        self.displayNodeGroup_comboBox.setObjectName(u"displayNodeGroup_comboBox")
+
+        self.horizontalLayout_12.addWidget(self.displayNodeGroup_comboBox)
+
+
+        self.verticalLayout_7.addWidget(self.displayNode_frame)
+
         self.displayLineCategories_groupBox = QGroupBox(self.display_tab)
         self.displayLineCategories_groupBox.setObjectName(u"displayLineCategories_groupBox")
         self.verticalLayout_4 = QVBoxLayout(self.displayLineCategories_groupBox)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.displayLineGeneral_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayLineGeneral_frame.setObjectName(u"displayLineGeneral_frame")
-        self.displayLineGeneral_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayLineGeneral_frame.setFrameShadow(QFrame.Raised)
+        self.displayLineGeneral_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayLineGeneral_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_9 = QHBoxLayout(self.displayLineGeneral_frame)
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
@@ -233,7 +263,7 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayLineGeneralRadius_checkBox = QCheckBox(self.displayLineGeneral_frame)
         self.displayLineGeneralRadius_checkBox.setObjectName(u"displayLineGeneralRadius_checkBox")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.displayLineGeneralRadius_checkBox.sizePolicy().hasHeightForWidth())
@@ -251,8 +281,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayIndepNetworks_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayIndepNetworks_frame.setObjectName(u"displayIndepNetworks_frame")
-        self.displayIndepNetworks_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayIndepNetworks_frame.setFrameShadow(QFrame.Raised)
+        self.displayIndepNetworks_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayIndepNetworks_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_10 = QHBoxLayout(self.displayIndepNetworks_frame)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
@@ -276,8 +306,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayNetworkGroup1_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayNetworkGroup1_frame.setObjectName(u"displayNetworkGroup1_frame")
-        self.displayNetworkGroup1_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayNetworkGroup1_frame.setFrameShadow(QFrame.Raised)
+        self.displayNetworkGroup1_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayNetworkGroup1_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_6 = QHBoxLayout(self.displayNetworkGroup1_frame)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -303,8 +333,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayNetworkGroup2_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayNetworkGroup2_frame.setObjectName(u"displayNetworkGroup2_frame")
-        self.displayNetworkGroup2_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayNetworkGroup2_frame.setFrameShadow(QFrame.Raised)
+        self.displayNetworkGroup2_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayNetworkGroup2_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_4 = QHBoxLayout(self.displayNetworkGroup2_frame)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -362,8 +392,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayEndPoints_frame = QFrame(self.display_tab)
         self.displayEndPoints_frame.setObjectName(u"displayEndPoints_frame")
-        self.displayEndPoints_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayEndPoints_frame.setFrameShadow(QFrame.Raised)
+        self.displayEndPoints_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayEndPoints_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_5 = QHBoxLayout(self.displayEndPoints_frame)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
@@ -372,8 +402,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayScale_frame = QFrame(self.display_tab)
         self.displayScale_frame.setObjectName(u"displayScale_frame")
-        self.displayScale_frame.setFrameShape(QFrame.StyledPanel)
-        self.displayScale_frame.setFrameShadow(QFrame.Raised)
+        self.displayScale_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.displayScale_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_3 = QHBoxLayout(self.displayScale_frame)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -387,6 +417,29 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.horizontalLayout_3.addWidget(self.displayRadiusScale_lineEdit)
 
+        self.displayTheme_frame = QFrame(self.displayScale_frame)
+        self.displayTheme_frame.setObjectName(u"displayTheme_frame")
+        self.displayTheme_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayTheme_frame.setFrameShadow(QFrame.Shadow.Plain)
+        self.formLayout_4 = QFormLayout(self.displayTheme_frame)
+        self.formLayout_4.setObjectName(u"formLayout_4")
+        self.formLayout_4.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.FieldsStayAtSizeHint)
+        self.formLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.displayTheme_label = QLabel(self.displayTheme_frame)
+        self.displayTheme_label.setObjectName(u"displayTheme_label")
+
+        self.formLayout_4.setWidget(0, QFormLayout.LabelRole, self.displayTheme_label)
+
+        self.displayTheme_comboBox = QComboBox(self.displayTheme_frame)
+        self.displayTheme_comboBox.addItem("")
+        self.displayTheme_comboBox.addItem("")
+        self.displayTheme_comboBox.setObjectName(u"displayTheme_comboBox")
+
+        self.formLayout_4.setWidget(0, QFormLayout.FieldRole, self.displayTheme_comboBox)
+
+
+        self.horizontalLayout_3.addWidget(self.displayTheme_frame)
+
 
         self.verticalLayout_7.addWidget(self.displayScale_frame)
 
@@ -397,8 +450,8 @@ class Ui_SegmentationStitcherWidget(object):
         self.verticalLayout_12.setObjectName(u"verticalLayout_12")
         self.annotations_group_frame = QFrame(self.annotations_tab)
         self.annotations_group_frame.setObjectName(u"annotations_group_frame")
-        self.annotations_group_frame.setFrameShape(QFrame.StyledPanel)
-        self.annotations_group_frame.setFrameShadow(QFrame.Raised)
+        self.annotations_group_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.annotations_group_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.formLayout_2 = QFormLayout(self.annotations_group_frame)
         self.formLayout_2.setObjectName(u"formLayout_2")
         self.formLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -469,8 +522,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.bottom_frame = QFrame(self.dockWidgetContents)
         self.bottom_frame.setObjectName(u"bottom_frame")
-        self.bottom_frame.setFrameShape(QFrame.StyledPanel)
-        self.bottom_frame.setFrameShadow(QFrame.Raised)
+        self.bottom_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.bottom_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_2 = QHBoxLayout(self.bottom_frame)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(3, 3, 3, 3)
@@ -505,7 +558,7 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.alignmentsceneviewerwidget = AlignmentSceneviewerWidget(SegmentationStitcherWidget)
         self.alignmentsceneviewerwidget.setObjectName(u"alignmentsceneviewerwidget")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy4.setHorizontalStretch(1)
         sizePolicy4.setVerticalStretch(1)
         sizePolicy4.setHeightForWidth(self.alignmentsceneviewerwidget.sizePolicy().hasHeightForWidth())
@@ -532,7 +585,7 @@ class Ui_SegmentationStitcherWidget(object):
         self.segmentRotation_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Rotation:", None))
         self.segmentTranslation_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Translation:", None))
         self.connections_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Connections:", None))
-        self.conntectionsNew_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"New...", None))
+        self.connectionsNew_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"New...", None))
         self.connectionsDelete_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Delete...", None))
 #if QT_CONFIG(tooltip)
         self.connectionsOptimizeAlignment_pushButton.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Optimize  transformation of the second segment in the selected connection to align its network end points with those of the first segment.</p></body></html>", None))
@@ -541,6 +594,9 @@ class Ui_SegmentationStitcherWidget(object):
         self.displayMarkerNames_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Marker names", None))
         self.displayMarkerPoints_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Marker points", None))
         self.displayAxes_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Axes", None))
+        self.displayNodePoints_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Node points", None))
+        self.displayNodeNumbers_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Node numbers", None))
+        self.displayNodeGroup_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Node group:", None))
         self.displayLineCategories_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Line Segmentations:", None))
         self.displayLineGeneral_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"General               ", None))
         self.displayLineGeneralRadius_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Radius", None))
@@ -560,6 +616,10 @@ class Ui_SegmentationStitcherWidget(object):
         self.displayEndPointRadius_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Radius", None))
         self.displayEndPointTrans_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Trans.", None))
         self.displayRadiusScale_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Radius scale:", None))
+        self.displayTheme_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Theme:", None))
+        self.displayTheme_comboBox.setItemText(0, QCoreApplication.translate("SegmentationStitcherWidget", u"Dark", None))
+        self.displayTheme_comboBox.setItemText(1, QCoreApplication.translate("SegmentationStitcherWidget", u"Light", None))
+
         self.controls_tabWidget.setTabText(self.controls_tabWidget.indexOf(self.display_tab), QCoreApplication.translate("SegmentationStitcherWidget", u"Display", None))
         self.annotationName_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Name:", None))
         self.annotationTerm_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Term:", None))

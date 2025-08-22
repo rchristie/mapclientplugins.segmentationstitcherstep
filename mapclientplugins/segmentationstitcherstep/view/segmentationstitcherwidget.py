@@ -64,7 +64,7 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.segmentRotation_lineEdit.editingFinished.connect(self._segmentRotation_lineEditChanged)
         self._ui.segmentTranslation_lineEdit.editingFinished.connect(self._segmentTranslation_lineEditChanged)
 
-        self._ui.conntectionsNew_pushButton.clicked.connect(self._connectionNew_buttonClicked)
+        self._ui.connectionsNew_pushButton.clicked.connect(self._connectionNew_buttonClicked)
         self._ui.connectionsDelete_pushButton.clicked.connect(self._connectionDelete_buttonClicked)
         self._ui.connectionsOptimizeAlignment_pushButton.clicked.connect(
             self._connectionsOptimizeAlignment_buttonPressed)
@@ -72,6 +72,9 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.displayAxes_checkBox.clicked.connect(self._displayAxes_clicked)
         self._ui.displayMarkerPoints_checkBox.clicked.connect(self._displayMarkerPoints_clicked)
         self._ui.displayMarkerNames_checkBox.clicked.connect(self._displayMarkerNames_clicked)
+        self._ui.displayNodePoints_checkBox.clicked.connect(self._displayNodePoints_clicked)
+        self._ui.displayNodeNumbers_checkBox.clicked.connect(self._displayNodeNumbers_clicked)
+        self._ui.displayNodeGroup_comboBox.currentIndexChanged.connect(self._displayNodeGroupChanged)
 
         self._ui.displayLineGeneral_checkBox.clicked.connect(self._displayLineGeneral_clicked)
         self._ui.displayLineGeneralRadius_checkBox.clicked.connect(self._displayLineGeneralRadius_clicked)
@@ -96,11 +99,32 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.annotationCategory_comboBox.currentIndexChanged.connect(self._annotationCategory_changed)
         self._ui.annotationAlignWeight_lineEdit.editingFinished.connect(self._annotationAlignWeight_entered)
 
+    def _set_combo_box_items(self, combo_box, names, current_name):
+        """
+        Set list of all names and currently selected name in combo box.
+        :param combo_box: QComboBox
+        :param names: List of all valid names of which 0 index is the default/None text.
+        :param current_name: Name in combo box tests or None for first/default item.
+        """
+        combo_box.blockSignals(True)
+        combo_box.addItems(names)
+        if current_name:
+            index = combo_box.findText(current_name)
+        else:
+            index = 0
+        combo_box.setCurrentIndex(index)
+        combo_box.blockSignals(False)
+
     def _refresh_options(self):
         self._ui.identifier_label.setText('Identifier:  ' + self._model.get_step_identifier())
         self._ui.displayAxes_checkBox.setChecked(self._model.is_display_axes())
         self._ui.displayMarkerPoints_checkBox.setChecked(self._model.is_display_marker_points())
         self._ui.displayMarkerNames_checkBox.setChecked(self._model.is_display_marker_names())
+        self._ui.displayNodePoints_checkBox.setChecked(self._model.is_display_node_points())
+        self._ui.displayNodeNumbers_checkBox.setChecked(self._model.is_display_node_numbers())
+        group_names = self._model.get_raw_group_names()
+        self._set_combo_box_items(
+            self._ui.displayNodeGroup_comboBox, ["<all>"] + group_names, self._model.get_display_node_group_name())
 
         self._ui.displayLineGeneral_checkBox.setChecked(self._model.is_display_line_general())
         self._ui.displayLineGeneralRadius_checkBox.setChecked(self._model.is_display_line_general_radius())
@@ -410,6 +434,19 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
 
     def _displayMarkerNames_clicked(self):
         self._model.set_display_marker_names(self._ui.displayMarkerNames_checkBox.isChecked())
+
+    def _displayNodePoints_clicked(self):
+        self._model.set_display_node_points(self._ui.displayNodePoints_checkBox.isChecked())
+
+    def _displayNodeNumbers_clicked(self):
+        self._model.set_display_node_numbers(self._ui.displayNodeNumbers_checkBox.isChecked())
+
+    def _displayNodeGroupChanged(self, index):
+        if index == 0:
+            name = None
+        else:
+            name = self._ui.displayNodeGroup_comboBox.itemText(index)
+        self._model.set_display_node_group_name(name)
 
     def _displayLineGeneral_clicked(self):
         self._model.set_display_line_general(self._ui.displayLineGeneral_checkBox.isChecked())
