@@ -40,8 +40,8 @@ class SegmentationStitcherModel(object):
         self._location_stem = os.path.join(location, step_identifier)
         self._step_identifier = step_identifier
         self._category_graphics_info = [
-            (AnnotationCategory.GENERAL, "display_line_general", "green"),
-            (AnnotationCategory.INDEPENDENT_NETWORK, "display_independent_networks", "yellow"),
+            (AnnotationCategory.GENERAL, "display_line_general", "mid green"),
+            (AnnotationCategory.INDEPENDENT_NETWORK, "display_independent_networks", "purple"),
             (AnnotationCategory.NETWORK_GROUP_1, "display_network_group_1", "mid blue"),
             (AnnotationCategory.NETWORK_GROUP_2, "display_network_group_2", "orange")
         ]
@@ -71,7 +71,7 @@ class SegmentationStitcherModel(object):
             "display_end_point_radius": False,
             "display_end_point_trans": False,
             "display_radius_scale": 1.0,
-            "displayTheme": "Dark"
+            "display_theme": "Dark"
         }
         self._load_settings()
         self.create_graphics()
@@ -94,11 +94,27 @@ class SegmentationStitcherModel(object):
             mid_blue = self._materialmodule.createMaterial()
             mid_blue.setName("mid blue")
             mid_blue.setManaged(True)
-            mid_blue.setAttributeReal3(Material.ATTRIBUTE_AMBIENT, [0.0, 0.2, 0.6])
-            mid_blue.setAttributeReal3(Material.ATTRIBUTE_DIFFUSE, [0.0, 0.7, 1.0])
+            mid_blue.setAttributeReal3(Material.ATTRIBUTE_AMBIENT, [0.0, 0.4, 0.8])
+            mid_blue.setAttributeReal3(Material.ATTRIBUTE_DIFFUSE, [0.0, 0.6, 1.0])
             mid_blue.setAttributeReal3(Material.ATTRIBUTE_EMISSION, [0.0, 0.0, 0.0])
             mid_blue.setAttributeReal3(Material.ATTRIBUTE_SPECULAR, [0.1, 0.1, 0.1])
             mid_blue.setAttributeReal(Material.ATTRIBUTE_SHININESS, 0.2)
+            mid_green = self._materialmodule.createMaterial()
+            mid_green.setName("mid green")
+            mid_green.setManaged(True)
+            mid_green.setAttributeReal3(Material.ATTRIBUTE_AMBIENT, [0.2, 0.7, 0.2])
+            mid_green.setAttributeReal3(Material.ATTRIBUTE_DIFFUSE, [0.2, 0.7, 0.2])
+            mid_green.setAttributeReal3(Material.ATTRIBUTE_EMISSION, [0.0, 0.0, 0.0])
+            mid_green.setAttributeReal3(Material.ATTRIBUTE_SPECULAR, [0.1, 0.1, 0.1])
+            mid_green.setAttributeReal(Material.ATTRIBUTE_SHININESS, 0.2)
+            purple = self._materialmodule.createMaterial()
+            purple.setName("purple")
+            purple.setManaged(True)
+            purple.setAttributeReal3(Material.ATTRIBUTE_AMBIENT, [0.6, 0.0, 1.0])
+            purple.setAttributeReal3(Material.ATTRIBUTE_DIFFUSE, [0.6, 0.0, 1.0])
+            purple.setAttributeReal3(Material.ATTRIBUTE_EMISSION, [0.0, 0.0, 0.0])
+            purple.setAttributeReal3(Material.ATTRIBUTE_SPECULAR, [0.1, 0.1, 0.1])
+            purple.setAttributeReal(Material.ATTRIBUTE_SHININESS, 0.2)
             line_material_names = [graphics_info[-1] for graphics_info in self._category_graphics_info]
             for material_name in line_material_names + [self._end_point_material_name]:
                 material = self._materialmodule.findMaterialByName(material_name)
@@ -494,6 +510,36 @@ class SegmentationStitcherModel(object):
     def set_display_node_points(self, show):
         self._set_raw_visibility('display_node_points', show)
 
+    def get_display_theme(self):
+        return self._display_settings['display_theme']
+
+    def _apply_display_theme(self):
+        """
+        Update graphics materials for the current theme.
+        """
+        root_region = self.get_root_region()
+        root_scene = root_region.getScene()
+        if not root_scene:
+            return
+        display_theme_name = self._display_settings['display_theme']
+        is_dark = display_theme_name == 'Dark'
+        segments = self._stitcher.get_segments()
+        for segment in segments:
+            region = segment.get_raw_region()
+            scene = region.getScene()
+            with ChangeManager(scene):
+                for graphics_name in ['display_marker_points', 'display_marker_names']:
+                    graphics = scene.findGraphicsByName(graphics_name)
+                    graphics.setMaterial(self._materialmodule.findMaterialByName('white' if is_dark else 'black'))
+                for graphics_name in ['display_node_points', 'display_node_numbers']:
+                    graphics = scene.findGraphicsByName(graphics_name)
+                    graphics.setMaterial(self._materialmodule.findMaterialByName('yellow' if is_dark else 'magenta'))
+
+    def set_display_theme(self, display_theme_name):
+        assert display_theme_name in ('Dark', 'Light')
+        self._display_settings['display_theme'] = display_theme_name
+        self._apply_display_theme()
+
     def is_display_line_general(self):
         return self._get_visibility("display_line_general")
 
@@ -777,7 +823,7 @@ class SegmentationStitcherModel(object):
                     pointattr.setBaseSize([0.5 * glyph_width_small])
                     # pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_POINT)
                     # node_points.setRenderPointSize(3.0)
-                    node_points.setMaterial(self._materialmodule.findMaterialByName('magenta'))
+                    node_points.setMaterial(self._materialmodule.findMaterialByName('yellow'))
                     node_points.setName('display_node_points')
                     node_points.setVisibilityFlag(self.is_display_node_points())
 
@@ -789,7 +835,7 @@ class SegmentationStitcherModel(object):
                     pointattr.setLabelField(cmiss_number)
                     pointattr.setLabelText(1, " ")
                     pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_NONE)
-                    node_numbers.setMaterial(self._materialmodule.findMaterialByName('magenta'))
+                    node_numbers.setMaterial(self._materialmodule.findMaterialByName('yellow'))
                     node_numbers.setName('display_node_numbers')
                     node_numbers.setVisibilityFlag(self.is_display_node_numbers())
 
@@ -836,6 +882,7 @@ class SegmentationStitcherModel(object):
                     end_point_best_fit_lines.setVisibilityFlag(self.is_display_end_point_best_fit_lines())
 
             self._create_connection_graphics()
+            self._apply_display_theme()
 
     def _create_connection_graphics(self, only_connection=None):
         for connection in [only_connection] if only_connection else self._stitcher.get_connections():

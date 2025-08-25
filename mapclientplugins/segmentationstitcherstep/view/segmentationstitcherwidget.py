@@ -45,10 +45,18 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         if sceneviewer is not None:
             scene = self._model.get_root_region().getScene()
             self._ui.alignmentsceneviewerwidget.setScene(scene)
+            self._set_display_theme_background()
             # self._ui.alignmentsceneviewerwidget.setSelectModeAll()
             sceneviewer.setLookatParametersNonSkew([2.0, -2.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, 1.0])
             sceneviewer.setTransparencyMode(sceneviewer.TRANSPARENCY_MODE_SLOW)
             self._viewAll_buttonClicked()
+
+    def _set_display_theme_background(self):
+        sceneviewer = self._ui.alignmentsceneviewerwidget.getSceneviewer()
+        if sceneviewer is not None:
+            theme_name = self._model.get_display_theme()
+            background_colour_rgb = [1.0, 1.0, 1.0] if (theme_name == 'Light') else [0.0, 0.0, 0.0]
+            sceneviewer.setBackgroundColourRGB(background_colour_rgb)
 
     def _transformation_changed(self):
         # self._ui.segmentRotation_lineEdit.setText(self._model.getRotationText())
@@ -89,11 +97,12 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.displayNetworkGroup2Radius_checkBox.clicked.connect(self._displayNetworkGroup2Radius_clicked)
         self._ui.displayNetworkGroup2Trans_checkBox.clicked.connect(self._displayNetworkGroup2Trans_clicked)
 
-        self._ui.displayRadiusScale_lineEdit.editingFinished.connect(self._displayRadiusScale_entered)
         self._ui.displayEndPointDirections_checkBox.clicked.connect(self._displayEndPointDirections_clicked)
         self._ui.displayEndPointBestFitLines_checkBox.clicked.connect(self._displayEndPointBestFitLines_clicked)
         self._ui.displayEndPointRadius_checkBox.clicked.connect(self._displayEndPointRadius_clicked)
         self._ui.displayEndPointTrans_checkBox.clicked.connect(self._displayEndPointTrans_clicked)
+        self._ui.displayRadiusScale_lineEdit.editingFinished.connect(self._displayRadiusScale_entered)
+        self._ui.displayTheme_comboBox.currentIndexChanged.connect(self._display_theme_changed)
 
         self._ui.annotationName_comboBox.currentIndexChanged.connect(self._annotationName_changed)
         self._ui.annotationCategory_comboBox.currentIndexChanged.connect(self._annotationCategory_changed)
@@ -144,6 +153,10 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.displayEndPointBestFitLines_checkBox.setChecked(self._model.is_display_end_point_best_fit_lines())
         self._ui.displayEndPointRadius_checkBox.setChecked(self._model.is_display_end_point_radius())
         self._ui.displayEndPointTrans_checkBox.setChecked(self._model.is_display_end_point_trans())
+        index = self._ui.displayTheme_comboBox.findText(self._model.get_display_theme())
+        self._ui.displayTheme_comboBox.blockSignals(True)
+        self._ui.displayTheme_comboBox.setCurrentIndex(index)
+        self._ui.displayTheme_comboBox.blockSignals(False)
 
         self._refresh_segment_data()
         self._refresh_current_annotation_settings()
@@ -507,3 +520,8 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         if radius_scale >= 0.0:
             self._model.set_radius_scale(radius_scale)
         self._refresh_radius_scale()
+
+    def _display_theme_changed(self, index):
+        theme_name = self._ui.displayTheme_comboBox.itemText(index)
+        self._model.set_display_theme(theme_name)
+        self._set_display_theme_background()
