@@ -166,6 +166,19 @@ class SegmentationStitcherModel(object):
         """
         return location_stem + ".exf"
 
+    SEGMENTATION_STITCHER_DISPLAY_SETTINGS_ID = 'segmentation stitcher display settings'
+
+    def _get_output_display_settings(self):
+        """
+        :return: Display settings augmented with id and version information.
+        """
+        display_settings = {
+            'id': self.SEGMENTATION_STITCHER_DISPLAY_SETTINGS_ID,
+            'version': '1.0.0'
+        }
+        display_settings.update(self._display_settings)
+        return display_settings
+
     def _load_settings(self):
         settings_file_name = self.get_json_settings_filename(self._location_stem)
         if os.path.isfile(settings_file_name):
@@ -176,6 +189,13 @@ class SegmentationStitcherModel(object):
         if os.path.isfile(display_settings_file_name):
             with open(display_settings_file_name, "r") as f:
                 display_settings = json.loads(f.read())
+                settings_id = display_settings.get('id')
+                if settings_id is not None:
+                    assert settings_id == self.SEGMENTATION_STITCHER_DISPLAY_SETTINGS_ID
+                    assert display_settings['version'] == '1.0.0'  # future: migrate if version changes
+                    # these are not stored:
+                    del display_settings['id']
+                    del display_settings['version']
                 self._display_settings.update(display_settings)
 
     def _save_settings(self):
@@ -183,7 +203,7 @@ class SegmentationStitcherModel(object):
             settings = self._stitcher.encode_settings()
             f.write(json.dumps(settings, sort_keys=False, indent=4))
         with open(self.get_json_display_settings_filename(self._location_stem), "w") as f:
-            f.write(json.dumps(self._display_settings, sort_keys=False, indent=4))
+            f.write(json.dumps(self._get_output_display_settings(), sort_keys=False, indent=4))
 
     def done(self):
         self._save_settings()
