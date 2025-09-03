@@ -69,9 +69,11 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.done_pushButton.clicked.connect(self._done_buttonClicked)
         self._ui.stdViews_pushButton.clicked.connect(self._stdViews_buttonClicked)
         self._ui.viewAll_pushButton.clicked.connect(self._viewAll_buttonClicked)
+        self._ui.segments_listWidget.customContextMenuRequested.connect(self._segments_listWidget_contextMenu)
         self._ui.segmentRotation_lineEdit.editingFinished.connect(self._segmentRotation_lineEditChanged)
         self._ui.segmentTranslation_lineEdit.editingFinished.connect(self._segmentTranslation_lineEditChanged)
 
+        self._ui.connections_listWidget.customContextMenuRequested.connect(self._connections_listWidget_contextMenu)
         self._ui.connectionsNew_pushButton.clicked.connect(self._connectionNew_buttonClicked)
         self._ui.connectionsDelete_pushButton.clicked.connect(self._connectionDelete_buttonClicked)
         self._ui.connectionsOptimizeAlignment_pushButton.clicked.connect(
@@ -331,8 +333,8 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         stitcher = self._model.get_stitcher()
         segments = stitcher.get_segments()
         segment = segments[clicked_index]
-        visibility_flag = item.checkState() == QtCore.Qt.CheckState.Checked
-        segment.get_base_region().getScene().setVisibilityFlag(visibility_flag)
+        visible = item.checkState() == QtCore.Qt.CheckState.Checked
+        segment.get_base_region().getScene().setVisibilityFlag(visible)
         selected_modelIndex = self._ui.segments_listWidget.currentIndex()
         if clicked_index == selected_modelIndex.row():
             self._model.set_current_segment(segment)
@@ -345,6 +347,39 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.segmentRotation_lineEdit.setText(", ".join(realFormat.format(value) for value in rotation))
         translation = segment.get_translation()
         self._ui.segmentTranslation_lineEdit.setText(", ".join(realFormat.format(value) for value in translation))
+
+    def _segments_listWidget_set_all_visibility(self, visible):
+        stitcher = self._model.get_stitcher()
+        segments = stitcher.get_segments()
+        for i, segment in enumerate(segments):
+            segment.get_base_region().getScene().setVisibilityFlag(visible)
+            item = self._ui.segments_listWidget.item(i)
+            item.setCheckState(QtCore.Qt.CheckState.Checked if visible else QtCore.Qt.CheckState.Unchecked)
+
+    def _segments_listWidget_look_at_segment(self):
+        selected_item = self._ui.segments_listWidget.currentItem()
+        if selected_item:
+            clicked_index = self._ui.segments_listWidget.row(selected_item)
+            stitcher = self._model.get_stitcher()
+            segments = stitcher.get_segments()
+            segment = segments[clicked_index]
+            lookat_point = segment.transform_coordinates(segment.get_coordinates_midpoint())
+            sceneviewer = self._ui.alignmentsceneviewerwidget.getSceneviewer()
+            sceneviewer.setLookatParametersNonSkew(
+                sceneviewer.getEyePosition()[1], lookat_point, sceneviewer.getUpVector()[1])
+            selected_item.setCheckState(QtCore.Qt.CheckState.Checked)
+            self._segments_list_itemClicked(selected_item)
+
+    def _segments_listWidget_contextMenu(self, pos):
+        menu = QtWidgets.QMenu(self._ui.segments_listWidget)
+        action1 = menu.addAction("Hide all")
+        action2 = menu.addAction("Show all")
+        action3 = menu.addAction("Look at segment")
+        action1.triggered.connect(lambda: self._segments_listWidget_set_all_visibility(False))
+        action2.triggered.connect(lambda: self._segments_listWidget_set_all_visibility(True))
+        action3.triggered.connect(self._segments_listWidget_look_at_segment)
+        # Display the menu at the global position of the mouse click
+        menu.exec(self._ui.segments_listWidget.mapToGlobal(pos))
 
     def _segmentRotation_lineEditChanged(self):
         segment = self._model.get_current_segment()
@@ -398,11 +433,45 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         stitcher = self._model.get_stitcher()
         connections = stitcher.get_connections()
         connection = connections[clicked_index]
-        visibility_flag = item.checkState() == QtCore.Qt.CheckState.Checked
-        connection.get_region().getScene().setVisibilityFlag(visibility_flag)
+        visible = item.checkState() == QtCore.Qt.CheckState.Checked
+        connection.get_region().getScene().setVisibilityFlag(visible)
         selected_modelIndex = self._ui.connections_listWidget.currentIndex()
         if clicked_index == selected_modelIndex.row():
             self._model.set_current_connection(connection)
+
+    def _connections_listWidget_set_all_visibility(self, visible):
+        stitcher = self._model.get_stitcher()
+        connections = stitcher.get_connections()
+        for i, connection in enumerate(connections):
+            connection.get_region().getScene().setVisibilityFlag(visible)
+            item = self._ui.connections_listWidget.item(i)
+            item.setCheckState(QtCore.Qt.CheckState.Checked if visible else QtCore.Qt.CheckState.Unchecked)
+
+    def _connections_listWidget_look_at_connection(self):
+        selected_item = self._ui.connections_listWidget.currentItem()
+        if selected_item:
+            clicked_index = self._ui.connections_listWidget.row(selected_item)
+            stitcher = self._model.get_stitcher()
+            connections = stitcher.get_connections()
+            connection = connections[clicked_index]
+            lookat_point = connection.get_coordinates_midpoint()
+            if lookat_point:
+                sceneviewer = self._ui.alignmentsceneviewerwidget.getSceneviewer()
+                sceneviewer.setLookatParametersNonSkew(
+                    sceneviewer.getEyePosition()[1], lookat_point, sceneviewer.getUpVector()[1])
+            selected_item.setCheckState(QtCore.Qt.CheckState.Checked)
+            self._connections_list_itemClicked(selected_item)
+
+    def _connections_listWidget_contextMenu(self, pos):
+        menu = QtWidgets.QMenu(self._ui.connections_listWidget)
+        action1 = menu.addAction("Hide all")
+        action2 = menu.addAction("Show all")
+        action3 = menu.addAction("Look at connection")
+        action1.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(False))
+        action2.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(True))
+        action3.triggered.connect(self._connections_listWidget_look_at_connection)
+        # Display the menu at the global position of the mouse click
+        menu.exec(self._ui.connections_listWidget.mapToGlobal(pos))
 
     def _connectionNew_buttonClicked(self):
         stitcher = self._model.get_stitcher()

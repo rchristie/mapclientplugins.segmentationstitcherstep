@@ -68,6 +68,7 @@ class Ui_SegmentationStitcherWidget(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.segments_listWidget = QListWidget(self.segments_groupBox)
         self.segments_listWidget.setObjectName(u"segments_listWidget")
+        self.segments_listWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
         self.verticalLayout_2.addWidget(self.segments_listWidget)
 
@@ -80,7 +81,7 @@ class Ui_SegmentationStitcherWidget(object):
         self.stepedit_scrollArea.setWidgetResizable(True)
         self.stepedit_scrollAreaWidgetContents = QWidget()
         self.stepedit_scrollAreaWidgetContents.setObjectName(u"stepedit_scrollAreaWidgetContents")
-        self.stepedit_scrollAreaWidgetContents.setGeometry(QRect(0, 0, 358, 94))
+        self.stepedit_scrollAreaWidgetContents.setGeometry(QRect(0, 0, 348, 94))
         self.verticalLayout_3 = QVBoxLayout(self.stepedit_scrollAreaWidgetContents)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
@@ -158,6 +159,7 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.connections_listWidget = QListWidget(self.connections_groupBox)
         self.connections_listWidget.setObjectName(u"connections_listWidget")
+        self.connections_listWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
         self.formLayout_3.setWidget(1, QFormLayout.SpanningRole, self.connections_listWidget)
 
@@ -232,18 +234,28 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.horizontalLayout_12.addWidget(self.displayNodeNumbers_checkBox)
 
-        self.displayNodeGroup_label = QLabel(self.displayNode_frame)
-        self.displayNodeGroup_label.setObjectName(u"displayNodeGroup_label")
-
-        self.horizontalLayout_12.addWidget(self.displayNodeGroup_label)
-
-        self.displayNodeGroup_comboBox = QComboBox(self.displayNode_frame)
-        self.displayNodeGroup_comboBox.setObjectName(u"displayNodeGroup_comboBox")
-
-        self.horizontalLayout_12.addWidget(self.displayNodeGroup_comboBox)
-
 
         self.verticalLayout_7.addWidget(self.displayNode_frame)
+
+        self.displayNodeGroup_frame = QFrame(self.display_tab)
+        self.displayNodeGroup_frame.setObjectName(u"displayNodeGroup_frame")
+        self.displayNodeGroup_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayNodeGroup_frame.setFrameShadow(QFrame.Shadow.Plain)
+        self.formLayout_5 = QFormLayout(self.displayNodeGroup_frame)
+        self.formLayout_5.setObjectName(u"formLayout_5")
+        self.formLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.displayNodeGroup_label = QLabel(self.displayNodeGroup_frame)
+        self.displayNodeGroup_label.setObjectName(u"displayNodeGroup_label")
+
+        self.formLayout_5.setWidget(0, QFormLayout.LabelRole, self.displayNodeGroup_label)
+
+        self.displayNodeGroup_comboBox = QComboBox(self.displayNodeGroup_frame)
+        self.displayNodeGroup_comboBox.setObjectName(u"displayNodeGroup_comboBox")
+
+        self.formLayout_5.setWidget(0, QFormLayout.FieldRole, self.displayNodeGroup_comboBox)
+
+
+        self.verticalLayout_7.addWidget(self.displayNodeGroup_frame)
 
         self.displayLineCategories_groupBox = QGroupBox(self.display_tab)
         self.displayLineCategories_groupBox.setObjectName(u"displayLineCategories_groupBox")
@@ -402,8 +414,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayScale_frame = QFrame(self.display_tab)
         self.displayScale_frame.setObjectName(u"displayScale_frame")
-        self.displayScale_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayScale_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.displayScale_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayScale_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLayout_3 = QHBoxLayout(self.displayScale_frame)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)

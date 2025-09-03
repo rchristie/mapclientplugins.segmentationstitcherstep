@@ -6,7 +6,7 @@ import os
 import json
 
 from cmlibs.maths.vectorops import add, axis_angle_to_rotation_matrix, euler_to_rotation_matrix, matrix_mult, \
-    rotation_matrix_to_euler
+    matrix_vector_mult, rotation_matrix_to_euler, sub
 from cmlibs.utils.zinc.finiteelement import evaluate_field_nodeset_range
 from cmlibs.utils.zinc.general import ChangeManager, HierarchicalChangeManager
 from cmlibs.utils.zinc.field import get_group_list
@@ -27,16 +27,21 @@ class SegmentationStitcherModel(object):
     """
 
     def __init__(self, segmentation_file_locations, location, step_identifier,
-                 network_group_1_keywords, network_group2_keywords):
+                 network_group_1_keywords, network_group2_keywords, endpoints_file_locations=None):
         """
+        :param segmentation_file_locations: List of filenames of exf files containing segmentation tracings, one
+        for each segment to be stitched.
         :param location: Path to folder for mapclient step name.
         :param step_identifier: Workflow step name.
         :param network_group_1_keywords: List of keywords. Segmented networks annotated with any of these keywords are
         initially assigned to network group 1, allowing them to be stitched together.
         :param network_group2_keywords: List of keywords. Segmented networks annotated with any of these keywords are
         initially assigned to network group 2, allowing them to be stitched together.
+        :param endpoints_file_locations: Optional list of json files in Slicer markup format giving matching names for
+        end points in segments. Files must start with the same stem names as the segmentation file.
         """
-        self._stitcher = Stitcher(segmentation_file_locations, network_group_1_keywords, network_group2_keywords)
+        self._stitcher = Stitcher(segmentation_file_locations, network_group_1_keywords, network_group2_keywords,
+                                  endpoints_file_locations)
         self._location_stem = os.path.join(location, step_identifier)
         self._step_identifier = step_identifier
         self._category_graphics_info = [
@@ -344,12 +349,15 @@ class SegmentationStitcherModel(object):
         base_scene = segment.get_base_region().getScene()
         base_scene.setTransformationMatrix(transformation_matrix_4x4)
 
-    def set_segment_rotation(self, segment, rotation):
+    def set_segment_rotation(self, segment, rotation, add_translation=None):
         """
         Set the segment's transformation and update graphics transformation.
         :param segment: Segment to modify.
         :param rotation: 3 Euler angles in degrees.
+        :param add_translation: Optional additional translation to correct for centre of rotation.
         """
+        if add_translation:
+            segment.set_translation(add(segment.get_translation(), add_translation), notify=False)
         segment.set_rotation(rotation)
         self._set_segment_scene_transformation(segment)
         self._segment_data_changed(segment)
@@ -813,7 +821,7 @@ class SegmentationStitcherModel(object):
                     if marker_coordinates:
                         marker_points.setCoordinateField(marker_coordinates)
                     point_attr = marker_points.getGraphicspointattributes()
-                    point_attr.setBaseSize([glyph_width_small, glyph_width_small, glyph_width_small])
+                    point_attr.setBaseSize([0.1 * glyph_width_small, 0.1 * glyph_width_small, 0.1 * glyph_width_small])
                     point_attr.setGlyphShapeType(Glyph.SHAPE_TYPE_CROSS)
                     marker_points.setMaterial(self._materialmodule.findMaterialByName("white"))
                     marker_points.setName("display_marker_points")
@@ -950,12 +958,21 @@ class SegmentationStitcherModel(object):
 
     def rotateModel(self, axis, angle):
         if self._current_segment:
-            mat1 = axis_angle_to_rotation_matrix(axis, angle)
+            # enforce centre of rotation at midpoint of coordinates range
+            midpoint = self._current_segment.get_coordinates_midpoint()
             rotation = self._current_segment.get_rotation()
-            mat2 = euler_to_rotation_matrix([math.radians(deg) for deg in rotation])
-            product_mat = matrix_mult(mat1, mat2)
+
+            mat1 = euler_to_rotation_matrix([math.radians(deg) for deg in rotation])
+            midpoint_translation1 = matrix_vector_mult(mat1, midpoint)
+
+            mat2 = axis_angle_to_rotation_matrix(axis, angle)
+            product_mat = matrix_mult(mat2, mat1)
+            midpoint_translation2 = matrix_vector_mult(product_mat, midpoint)
+            # add
+            add_translation = sub(midpoint_translation1, midpoint_translation2)
+
             new_rotation = [math.degrees(rad) for rad in rotation_matrix_to_euler(product_mat)]
-            self.set_segment_rotation(self._current_segment, new_rotation)
+            self.set_segment_rotation(self._current_segment, new_rotation, add_translation)
 
     def scaleModel(self, factor):
         pass

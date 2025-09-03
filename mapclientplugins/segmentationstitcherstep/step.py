@@ -49,6 +49,19 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
                       ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                        'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
                        'http://physiomeproject.org/workflow/1.0/rdf-schema#json_file_location')])
+        # optional list of json end points in slicer markups format
+        self.addPort([('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#json_file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses-list-of',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses-list-of',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#json_file_location')])
         # Config:
         self._config = {
             'identifier': '',
@@ -60,6 +73,7 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
         # following are only set on successful execution of step
         self._port1_output_segmentation_file_location = None  # exf_file_location
         self._port2_output_json_settings_file_location = None  # json_file_location
+        self._port3_input_json_endpoints_file_locations = None  # json_file_location
         self._model = None
         self._view = None
 
@@ -75,7 +89,8 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
             self._port2_output_json_settings_file_location = None  # json_file_location
             self._model = SegmentationStitcherModel(
                 self._port0_input_segmentation_file_locations, self._location, self._config['identifier'],
-                self._config['network group 1 keywords'], self._config['network group 2 keywords'])
+                self._config['network group 1 keywords'], self._config['network group 2 keywords'],
+                self._port3_input_json_endpoints_file_locations)
             self._view = SegmentationStitcherWidget(self._model)
             self._view.register_done_callback(self._my_done_execution)
             self._setCurrentWidget(self._view)
@@ -102,10 +117,14 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
         :param index: Index of the port to return.
         :param dataIn: The data to set for the port at the given index.
         """
-        if not isinstance(dataIn, list):
-            dataIn = [dataIn]
-        # list of exf_file_location:
-        self._port0_input_segmentation_file_locations = [pathlib.PureWindowsPath(p).as_posix() for p in dataIn]
+        if index in (0, 3):
+            if not isinstance(dataIn, list):
+                dataIn = [dataIn]
+            if index == 0:
+                # list of exf_file_location:
+                self._port0_input_segmentation_file_locations = [pathlib.PureWindowsPath(p).as_posix() for p in dataIn]
+            elif index == 3:
+                self._port3_input_json_endpoints_file_locations = [pathlib.PureWindowsPath(p).as_posix() for p in dataIn]
 
     def getPortData(self, index):
         """
