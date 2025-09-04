@@ -67,6 +67,7 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.alignmentsceneviewerwidget.graphicsInitialized.connect(self._graphics_initialized)
         self._ui.documentation_pushButton.clicked.connect(self._documentation_buttonClicked)
         self._ui.done_pushButton.clicked.connect(self._done_buttonClicked)
+        self._ui.save_pushButton.clicked.connect(self._save_buttonClicked)
         self._ui.stdViews_pushButton.clicked.connect(self._stdViews_buttonClicked)
         self._ui.viewAll_pushButton.clicked.connect(self._viewAll_buttonClicked)
         self._ui.segments_listWidget.customContextMenuRequested.connect(self._segments_listWidget_contextMenu)
@@ -84,6 +85,7 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.displayMarkerNames_checkBox.clicked.connect(self._displayMarkerNames_clicked)
         self._ui.displayNodePoints_checkBox.clicked.connect(self._displayNodePoints_clicked)
         self._ui.displayNodeNumbers_checkBox.clicked.connect(self._displayNodeNumbers_clicked)
+        self._ui.displayNodePointsScale_lineEdit.editingFinished.connect(self._displayNodePointsScale_entered)
         self._ui.displayNodeGroup_comboBox.currentIndexChanged.connect(self._displayNodeGroupChanged)
 
         self._ui.displayLineGeneral_checkBox.clicked.connect(self._displayLineGeneral_clicked)
@@ -133,6 +135,7 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.displayMarkerNames_checkBox.setChecked(self._model.is_display_marker_names())
         self._ui.displayNodePoints_checkBox.setChecked(self._model.is_display_node_points())
         self._ui.displayNodeNumbers_checkBox.setChecked(self._model.is_display_node_numbers())
+        self._refresh_node_points_scale()
         group_names = self._model.get_raw_group_names()
         self._set_combo_box_items(
             self._ui.displayNodeGroup_comboBox, ["<all>"] + group_names, self._model.get_display_node_group_name())
@@ -271,6 +274,18 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._model = None
         self._done_callback()
         QtWidgets.QApplication.restoreOverrideCursor()
+
+    def _save_buttonClicked(self):
+        # Create a QMessageBox instance
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Save settings confirmation")
+        msg_box.setText("Save/overwrite settings?")
+        msg_box.setIcon(QtWidgets.QMessageBox.Question)
+        msg_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        msg_box.setDefaultButton(QtWidgets.QMessageBox.No)
+        ret = msg_box.exec()
+        if ret == QtWidgets.QMessageBox.Yes:
+            self._model.save()
 
     def _stdViews_buttonClicked(self):
         sceneviewer = self._ui.alignmentsceneviewerwidget.getSceneviewer()
@@ -578,16 +593,28 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
     def _displayEndPointTrans_clicked(self):
         self._model.set_display_end_point_trans(self._ui.displayEndPointTrans_checkBox.isChecked())
 
+    def _refresh_node_points_scale(self):
+        realFormat = "{:.4g}"
+        node_points_scale = self._model.get_display_node_points_scale()
+        node_points_scale_str = realFormat.format(node_points_scale)
+        self._ui.displayNodePointsScale_lineEdit.setText(node_points_scale_str)
+
+    def _displayNodePointsScale_entered(self):
+        node_points_scale = parse_real_non_negative(self._ui.displayNodePointsScale_lineEdit)
+        if node_points_scale >= 0.0:
+            self._model.set_display_node_points_scale(node_points_scale)
+        self._refresh_node_points_scale()
+
     def _refresh_radius_scale(self):
         realFormat = "{:.4g}"
-        radius_scale = self._model.get_radius_scale()
+        radius_scale = self._model.get_display_radius_scale()
         radius_scale_str = realFormat.format(radius_scale)
         self._ui.displayRadiusScale_lineEdit.setText(radius_scale_str)
 
     def _displayRadiusScale_entered(self):
         radius_scale = parse_real_non_negative(self._ui.displayRadiusScale_lineEdit)
         if radius_scale >= 0.0:
-            self._model.set_radius_scale(radius_scale)
+            self._model.set_display_radius_scale(radius_scale)
         self._refresh_radius_scale()
 
     def _display_theme_changed(self, index):

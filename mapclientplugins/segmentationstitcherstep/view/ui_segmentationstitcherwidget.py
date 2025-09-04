@@ -18,8 +18,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDockWidget,
     QFormLayout, QFrame, QGridLayout, QGroupBox,
     QHBoxLayout, QLabel, QLineEdit, QListWidget,
-    QListWidgetItem, QPushButton, QScrollArea, QSizePolicy,
-    QTabWidget, QVBoxLayout, QWidget)
+    QListWidgetItem, QPushButton, QSizePolicy, QTabWidget,
+    QVBoxLayout, QWidget)
 
 from cmlibs.widgets.alignmentsceneviewerwidget import AlignmentSceneviewerWidget
 
@@ -72,29 +72,10 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.verticalLayout_2.addWidget(self.segments_listWidget)
 
-        self.stepedit_scrollArea = QScrollArea(self.segments_groupBox)
-        self.stepedit_scrollArea.setObjectName(u"stepedit_scrollArea")
-        sizePolicy.setHeightForWidth(self.stepedit_scrollArea.sizePolicy().hasHeightForWidth())
-        self.stepedit_scrollArea.setSizePolicy(sizePolicy)
-        self.stepedit_scrollArea.setFrameShape(QFrame.Shape.NoFrame)
-        self.stepedit_scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        self.stepedit_scrollArea.setWidgetResizable(True)
-        self.stepedit_scrollAreaWidgetContents = QWidget()
-        self.stepedit_scrollAreaWidgetContents.setObjectName(u"stepedit_scrollAreaWidgetContents")
-        self.stepedit_scrollAreaWidgetContents.setGeometry(QRect(0, 0, 348, 94))
-        self.verticalLayout_3 = QVBoxLayout(self.stepedit_scrollAreaWidgetContents)
-        self.verticalLayout_3.setSpacing(0)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.segment_frame = QFrame(self.stepedit_scrollAreaWidgetContents)
-        self.segment_frame.setObjectName(u"segment_frame")
-        self.segment_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.segment_frame.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_5 = QVBoxLayout(self.segment_frame)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.segmentTransformation_groupBox = QGroupBox(self.segment_frame)
+        self.segmentTransformation_groupBox = QGroupBox(self.segments_groupBox)
         self.segmentTransformation_groupBox.setObjectName(u"segmentTransformation_groupBox")
+        sizePolicy.setHeightForWidth(self.segmentTransformation_groupBox.sizePolicy().hasHeightForWidth())
+        self.segmentTransformation_groupBox.setSizePolicy(sizePolicy)
         self.formLayout = QFormLayout(self.segmentTransformation_groupBox)
         self.formLayout.setObjectName(u"formLayout")
         self.formLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
@@ -119,14 +100,7 @@ class Ui_SegmentationStitcherWidget(object):
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.segmentTranslation_lineEdit)
 
 
-        self.verticalLayout_5.addWidget(self.segmentTransformation_groupBox)
-
-
-        self.verticalLayout_3.addWidget(self.segment_frame)
-
-        self.stepedit_scrollArea.setWidget(self.stepedit_scrollAreaWidgetContents)
-
-        self.verticalLayout_2.addWidget(self.stepedit_scrollArea)
+        self.verticalLayout_2.addWidget(self.segmentTransformation_groupBox)
 
 
         self.verticalLayout.addWidget(self.segments_groupBox)
@@ -139,8 +113,8 @@ class Ui_SegmentationStitcherWidget(object):
         self.connectionsControls_frame.setObjectName(u"connectionsControls_frame")
         sizePolicy.setHeightForWidth(self.connectionsControls_frame.sizePolicy().hasHeightForWidth())
         self.connectionsControls_frame.setSizePolicy(sizePolicy)
-        self.connectionsControls_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.connectionsControls_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.connectionsControls_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.connectionsControls_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLayout_11 = QHBoxLayout(self.connectionsControls_frame)
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
@@ -194,8 +168,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayMarker_frame = QFrame(self.display_tab)
         self.displayMarker_frame.setObjectName(u"displayMarker_frame")
-        self.displayMarker_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayMarker_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.displayMarker_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayMarker_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.gridLayout = QGridLayout(self.displayMarker_frame)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -219,8 +193,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayNode_frame = QFrame(self.display_tab)
         self.displayNode_frame.setObjectName(u"displayNode_frame")
-        self.displayNode_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayNode_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.displayNode_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayNode_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLayout_12 = QHBoxLayout(self.displayNode_frame)
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
@@ -234,8 +208,28 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.horizontalLayout_12.addWidget(self.displayNodeNumbers_checkBox)
 
+        self.displayNodePointsScale_frame = QFrame(self.displayNode_frame)
+        self.displayNodePointsScale_frame.setObjectName(u"displayNodePointsScale_frame")
+        self.displayNodePointsScale_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayNodePointsScale_frame.setFrameShadow(QFrame.Shadow.Plain)
+        self.horizontalLayout_13 = QHBoxLayout(self.displayNodePointsScale_frame)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.displayNodePointsScale_label = QLabel(self.displayNodePointsScale_frame)
+        self.displayNodePointsScale_label.setObjectName(u"displayNodePointsScale_label")
 
-        self.verticalLayout_7.addWidget(self.displayNode_frame)
+        self.horizontalLayout_13.addWidget(self.displayNodePointsScale_label)
+
+        self.displayNodePointsScale_lineEdit = QLineEdit(self.displayNodePointsScale_frame)
+        self.displayNodePointsScale_lineEdit.setObjectName(u"displayNodePointsScale_lineEdit")
+
+        self.horizontalLayout_13.addWidget(self.displayNodePointsScale_lineEdit)
+
+
+        self.horizontalLayout_12.addWidget(self.displayNodePointsScale_frame)
+
+
+        self.verticalLayout_7.addWidget(self.displayNode_frame, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.displayNodeGroup_frame = QFrame(self.display_tab)
         self.displayNodeGroup_frame.setObjectName(u"displayNodeGroup_frame")
@@ -263,8 +257,8 @@ class Ui_SegmentationStitcherWidget(object):
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.displayLineGeneral_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayLineGeneral_frame.setObjectName(u"displayLineGeneral_frame")
-        self.displayLineGeneral_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayLineGeneral_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.displayLineGeneral_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayLineGeneral_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLayout_9 = QHBoxLayout(self.displayLineGeneral_frame)
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
@@ -293,8 +287,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayIndepNetworks_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayIndepNetworks_frame.setObjectName(u"displayIndepNetworks_frame")
-        self.displayIndepNetworks_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayIndepNetworks_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.displayIndepNetworks_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayIndepNetworks_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLayout_10 = QHBoxLayout(self.displayIndepNetworks_frame)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
@@ -318,8 +312,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayNetworkGroup1_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayNetworkGroup1_frame.setObjectName(u"displayNetworkGroup1_frame")
-        self.displayNetworkGroup1_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayNetworkGroup1_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.displayNetworkGroup1_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayNetworkGroup1_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLayout_6 = QHBoxLayout(self.displayNetworkGroup1_frame)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -345,8 +339,8 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayNetworkGroup2_frame = QFrame(self.displayLineCategories_groupBox)
         self.displayNetworkGroup2_frame.setObjectName(u"displayNetworkGroup2_frame")
-        self.displayNetworkGroup2_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayNetworkGroup2_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.displayNetworkGroup2_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.displayNetworkGroup2_frame.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLayout_4 = QHBoxLayout(self.displayNetworkGroup2_frame)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -402,16 +396,6 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.verticalLayout_7.addWidget(self.displayEndPoint_groupBox)
 
-        self.displayEndPoints_frame = QFrame(self.display_tab)
-        self.displayEndPoints_frame.setObjectName(u"displayEndPoints_frame")
-        self.displayEndPoints_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.displayEndPoints_frame.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_5 = QHBoxLayout(self.displayEndPoints_frame)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
-
-        self.verticalLayout_7.addWidget(self.displayEndPoints_frame)
-
         self.displayScale_frame = QFrame(self.display_tab)
         self.displayScale_frame.setObjectName(u"displayScale_frame")
         self.displayScale_frame.setFrameShape(QFrame.Shape.NoFrame)
@@ -426,6 +410,11 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.displayRadiusScale_lineEdit = QLineEdit(self.displayScale_frame)
         self.displayRadiusScale_lineEdit.setObjectName(u"displayRadiusScale_lineEdit")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.displayRadiusScale_lineEdit.sizePolicy().hasHeightForWidth())
+        self.displayRadiusScale_lineEdit.setSizePolicy(sizePolicy4)
 
         self.horizontalLayout_3.addWidget(self.displayRadiusScale_lineEdit)
 
@@ -440,14 +429,14 @@ class Ui_SegmentationStitcherWidget(object):
         self.displayTheme_label = QLabel(self.displayTheme_frame)
         self.displayTheme_label.setObjectName(u"displayTheme_label")
 
-        self.formLayout_4.setWidget(0, QFormLayout.LabelRole, self.displayTheme_label)
+        self.formLayout_4.setWidget(1, QFormLayout.LabelRole, self.displayTheme_label)
 
         self.displayTheme_comboBox = QComboBox(self.displayTheme_frame)
         self.displayTheme_comboBox.addItem("")
         self.displayTheme_comboBox.addItem("")
         self.displayTheme_comboBox.setObjectName(u"displayTheme_comboBox")
 
-        self.formLayout_4.setWidget(0, QFormLayout.FieldRole, self.displayTheme_comboBox)
+        self.formLayout_4.setWidget(1, QFormLayout.FieldRole, self.displayTheme_comboBox)
 
 
         self.horizontalLayout_3.addWidget(self.displayTheme_frame)
@@ -554,6 +543,11 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.horizontalLayout_2.addWidget(self.stdViews_pushButton)
 
+        self.save_pushButton = QPushButton(self.bottom_frame)
+        self.save_pushButton.setObjectName(u"save_pushButton")
+
+        self.horizontalLayout_2.addWidget(self.save_pushButton)
+
         self.done_pushButton = QPushButton(self.bottom_frame)
         self.done_pushButton.setObjectName(u"done_pushButton")
         sizePolicy3.setHeightForWidth(self.done_pushButton.sizePolicy().hasHeightForWidth())
@@ -570,11 +564,11 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.alignmentsceneviewerwidget = AlignmentSceneviewerWidget(SegmentationStitcherWidget)
         self.alignmentsceneviewerwidget.setObjectName(u"alignmentsceneviewerwidget")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy4.setHorizontalStretch(1)
-        sizePolicy4.setVerticalStretch(1)
-        sizePolicy4.setHeightForWidth(self.alignmentsceneviewerwidget.sizePolicy().hasHeightForWidth())
-        self.alignmentsceneviewerwidget.setSizePolicy(sizePolicy4)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy5.setHorizontalStretch(1)
+        sizePolicy5.setVerticalStretch(1)
+        sizePolicy5.setHeightForWidth(self.alignmentsceneviewerwidget.sizePolicy().hasHeightForWidth())
+        self.alignmentsceneviewerwidget.setSizePolicy(sizePolicy5)
         self.alignmentsceneviewerwidget.setAutoFillBackground(False)
 
         self.horizontalLayout.addWidget(self.alignmentsceneviewerwidget)
@@ -595,7 +589,13 @@ class Ui_SegmentationStitcherWidget(object):
         self.segments_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Segments:", None))
         self.segmentTransformation_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Transformation:", None))
         self.segmentRotation_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Rotation:", None))
+#if QT_CONFIG(tooltip)
+        self.segmentRotation_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Euler angle rotations in degrees about z, y', x' for the selected segment above.</p><p>To set interactively: with the mouse pointer in the graphics area, hold down the A-key and left mouse button and drag to rotate the segment about the axis normal to the drag in the window plane. Translation will also be affected.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.segmentTranslation_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Translation:", None))
+#if QT_CONFIG(tooltip)
+        self.segmentTranslation_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Translation in x, y, z for the selected segment above.</p><p>To set interactively: with the mouse points in the graphics area, hold down the A-key and middle mouse button and drag to translate.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.connections_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Connections:", None))
         self.connectionsNew_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"New...", None))
         self.connectionsDelete_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Delete...", None))
@@ -608,11 +608,15 @@ class Ui_SegmentationStitcherWidget(object):
         self.displayAxes_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Axes", None))
         self.displayNodePoints_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Node points", None))
         self.displayNodeNumbers_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Node numbers", None))
+        self.displayNodePointsScale_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Node scale:", None))
+#if QT_CONFIG(tooltip)
+        self.displayNodePointsScale_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Set scale of node point sphere glyphs x 1/100 of mean segment length.</p><p>Value 0.0 sets fixed-size node point glyph.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.displayNodeGroup_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Node group:", None))
         self.displayLineCategories_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Line Segmentations:", None))
         self.displayLineGeneral_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"General               ", None))
         self.displayLineGeneralRadius_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Radius", None))
-        self.displayLineGeneralTrans_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Trans.", None))
+        self.displayLineGeneralTrans_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Trans", None))
         self.displayIndepNetworks_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Indep. networks  ", None))
         self.displayIndepNetworksRadius_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Radius", None))
         self.displayIndepNetworksTrans_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Trans.", None))
@@ -628,18 +632,27 @@ class Ui_SegmentationStitcherWidget(object):
         self.displayEndPointRadius_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Radius", None))
         self.displayEndPointTrans_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Trans.", None))
         self.displayRadiusScale_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Radius scale:", None))
+#if QT_CONFIG(tooltip)
+        self.displayRadiusScale_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Set scale of radius shown e.g. 0.5 shows graphics at half the true radius.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.displayTheme_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Theme:", None))
         self.displayTheme_comboBox.setItemText(0, QCoreApplication.translate("SegmentationStitcherWidget", u"Dark", None))
         self.displayTheme_comboBox.setItemText(1, QCoreApplication.translate("SegmentationStitcherWidget", u"Light", None))
 
+#if QT_CONFIG(tooltip)
+        self.displayTheme_comboBox.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Switch between black/white background theme with other colours changed for contrast.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.controls_tabWidget.setTabText(self.controls_tabWidget.indexOf(self.display_tab), QCoreApplication.translate("SegmentationStitcherWidget", u"Display", None))
         self.annotationName_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Name:", None))
         self.annotationTerm_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Term:", None))
         self.annotationDimension_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Dimension:", None))
         self.annotationCategory_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Category:", None))
+#if QT_CONFIG(tooltip)
+        self.annotationCategory_comboBox.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Set the category controlling how features with this annotation term are interpreted:</p><p>* EXCLUDE: exclude from output.</p><p>* GENERAL: include but do not stitch.</p><p>* INDEPENDENT_NETWORK: include and allow stitching with itself only.</p><p>* NETWORK_GROUP_1: include and allow stitching between anything in this group.</p><p>* NETWORK_GROUP_2: include and allow stitching between anything in this group.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.annotationAlignWeight_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Align Weight:", None))
 #if QT_CONFIG(tooltip)
-        self.annotationAlignWeight_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p><br/>Weight applied to this annotation/category when optimizing alignment.</p></body></html>", None))
+        self.annotationAlignWeight_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p><br/>Weight &gt;= 0.0 applied to this annotation/category when optimizing alignment.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
         self.annotiationSetByCategory_checkBox.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>If checked, the values entered in the following are set for all annotations in the current category.</p></body></html>", None))
@@ -649,6 +662,10 @@ class Ui_SegmentationStitcherWidget(object):
         self.documentation_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Online Documentation", None))
         self.viewAll_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"View All", None))
         self.stdViews_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Std. Views", None))
+#if QT_CONFIG(tooltip)
+        self.save_pushButton.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Save stitcher and display settings without leaving.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.save_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Save...", None))
         self.done_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Done", None))
     # retranslateUi
 

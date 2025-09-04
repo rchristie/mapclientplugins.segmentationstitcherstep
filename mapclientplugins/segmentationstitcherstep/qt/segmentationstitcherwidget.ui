@@ -99,105 +99,49 @@
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="stepedit_scrollArea">
+           <widget class="QGroupBox" name="segmentTransformation_groupBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="frameShape">
-             <enum>QFrame::Shape::NoFrame</enum>
+            <property name="title">
+             <string>Transformation:</string>
             </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-            </property>
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="stepedit_scrollAreaWidgetContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>348</width>
-               <height>94</height>
-              </rect>
+            <layout class="QFormLayout" name="formLayout">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QFrame" name="segment_frame">
-                <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_5">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QGroupBox" name="segmentTransformation_groupBox">
-                   <property name="title">
-                    <string>Transformation:</string>
-                   </property>
-                   <layout class="QFormLayout" name="formLayout">
-                    <property name="fieldGrowthPolicy">
-                     <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
-                    </property>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="segmentRotation_label">
-                      <property name="text">
-                       <string>Rotation:</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QLineEdit" name="segmentRotation_lineEdit"/>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QLabel" name="segmentTranslation_label">
-                      <property name="text">
-                       <string>Translation:</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <widget class="QLineEdit" name="segmentTranslation_lineEdit"/>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
+             <item row="1" column="0">
+              <widget class="QLabel" name="segmentRotation_label">
+               <property name="text">
+                <string>Rotation:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="segmentRotation_lineEdit">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Euler angle rotations in degrees about z, y', x' for the selected segment above.&lt;/p&gt;&lt;p&gt;To set interactively: with the mouse pointer in the graphics area, hold down the A-key and left mouse button and drag to rotate the segment about the axis normal to the drag in the window plane. Translation will also be affected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="segmentTranslation_label">
+               <property name="text">
+                <string>Translation:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="segmentTranslation_lineEdit">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Translation in x, y, z for the selected segment above.&lt;/p&gt;&lt;p&gt;To set interactively: with the mouse points in the graphics area, hold down the A-key and middle mouse button and drag to translate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -218,10 +162,10 @@
              </sizepolicy>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Shape::StyledPanel</enum>
+             <enum>QFrame::Shape::NoFrame</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Shadow::Raised</enum>
+             <enum>QFrame::Shadow::Plain</enum>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_11">
              <property name="leftMargin">
@@ -316,10 +260,10 @@
            <item>
             <widget class="QFrame" name="displayMarker_frame">
              <property name="frameShape">
-              <enum>QFrame::Shape::StyledPanel</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="frameShadow">
-              <enum>QFrame::Shadow::Raised</enum>
+              <enum>QFrame::Shadow::Plain</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout">
               <property name="leftMargin">
@@ -358,13 +302,13 @@
              </layout>
             </widget>
            </item>
-           <item>
+           <item alignment="Qt::AlignmentFlag::AlignLeft">
             <widget class="QFrame" name="displayNode_frame">
              <property name="frameShape">
-              <enum>QFrame::Shape::StyledPanel</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="frameShadow">
-              <enum>QFrame::Shadow::Raised</enum>
+              <enum>QFrame::Shadow::Plain</enum>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_12">
               <property name="leftMargin">
@@ -391,6 +335,44 @@
                 <property name="text">
                  <string>Node numbers</string>
                 </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="displayNodePointsScale_frame">
+                <property name="frameShape">
+                 <enum>QFrame::Shape::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Shadow::Plain</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="displayNodePointsScale_label">
+                   <property name="text">
+                    <string>Node scale:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="displayNodePointsScale_lineEdit">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set scale of node point sphere glyphs x 1/100 of mean segment length.&lt;/p&gt;&lt;p&gt;Value 0.0 sets fixed-size node point glyph.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -439,10 +421,10 @@
               <item>
                <widget class="QFrame" name="displayLineGeneral_frame">
                 <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
+                 <enum>QFrame::Shadow::Plain</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_9">
                  <property name="leftMargin">
@@ -480,7 +462,7 @@
                  <item>
                   <widget class="QCheckBox" name="displayLineGeneralTrans_checkBox">
                    <property name="text">
-                    <string>Trans.</string>
+                    <string>Trans</string>
                    </property>
                   </widget>
                  </item>
@@ -490,10 +472,10 @@
               <item>
                <widget class="QFrame" name="displayIndepNetworks_frame">
                 <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
+                 <enum>QFrame::Shadow::Plain</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_10">
                  <property name="leftMargin">
@@ -535,10 +517,10 @@
               <item>
                <widget class="QFrame" name="displayNetworkGroup1_frame">
                 <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
+                 <enum>QFrame::Shadow::Plain</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_6">
                  <property name="leftMargin">
@@ -586,10 +568,10 @@
               <item>
                <widget class="QFrame" name="displayNetworkGroup2_frame">
                 <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
+                 <enum>QFrame::Shadow::Plain</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_4">
                  <property name="leftMargin">
@@ -681,30 +663,6 @@
             </widget>
            </item>
            <item>
-            <widget class="QFrame" name="displayEndPoints_frame">
-             <property name="frameShape">
-              <enum>QFrame::Shape::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Shadow::Raised</enum>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-             </layout>
-            </widget>
-           </item>
-           <item>
             <widget class="QFrame" name="displayScale_frame">
              <property name="frameShape">
               <enum>QFrame::Shape::NoFrame</enum>
@@ -733,7 +691,17 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="displayRadiusScale_lineEdit"/>
+               <widget class="QLineEdit" name="displayRadiusScale_lineEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set scale of radius shown e.g. 0.5 shows graphics at half the true radius.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QFrame" name="displayTheme_frame">
@@ -759,15 +727,18 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="0" column="0">
+                 <item row="1" column="0">
                   <widget class="QLabel" name="displayTheme_label">
                    <property name="text">
                     <string>Theme:</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
+                 <item row="1" column="1">
                   <widget class="QComboBox" name="displayTheme_comboBox">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Switch between black/white background theme with other colours changed for contrast.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
                    <item>
                     <property name="text">
                      <string>Dark</string>
@@ -857,7 +828,11 @@
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QComboBox" name="annotationCategory_comboBox"/>
+               <widget class="QComboBox" name="annotationCategory_comboBox">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the category controlling how features with this annotation term are interpreted:&lt;/p&gt;&lt;p&gt;* EXCLUDE: exclude from output.&lt;/p&gt;&lt;p&gt;* GENERAL: include but do not stitch.&lt;/p&gt;&lt;p&gt;* INDEPENDENT_NETWORK: include and allow stitching with itself only.&lt;/p&gt;&lt;p&gt;* NETWORK_GROUP_1: include and allow stitching between anything in this group.&lt;/p&gt;&lt;p&gt;* NETWORK_GROUP_2: include and allow stitching between anything in this group.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
               </item>
               <item row="0" column="1">
                <widget class="QComboBox" name="annotationName_comboBox"/>
@@ -872,7 +847,7 @@
               <item row="5" column="1">
                <widget class="QLineEdit" name="annotationAlignWeight_lineEdit">
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;Weight applied to this annotation/category when optimizing alignment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;Weight &amp;gt;= 0.0 applied to this annotation/category when optimizing alignment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -935,6 +910,16 @@
            <widget class="QPushButton" name="stdViews_pushButton">
             <property name="text">
              <string>Std. Views</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="save_pushButton">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save stitcher and display settings without leaving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Save...</string>
             </property>
            </widget>
           </item>

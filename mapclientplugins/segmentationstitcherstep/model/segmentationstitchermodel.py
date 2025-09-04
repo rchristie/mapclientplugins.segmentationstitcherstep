@@ -58,6 +58,7 @@ class SegmentationStitcherModel(object):
             "display_marker_names": False,
             "display_node_numbers": False,
             "display_node_points": False,
+            "display_node_points_scale": 1.0,
             "display_node_group_name": None,
             "display_line_general": True,
             "display_line_general_radius": False,
@@ -218,6 +219,12 @@ class SegmentationStitcherModel(object):
             f.write(json.dumps(settings, sort_keys=False, indent=4))
         with open(self.get_json_display_settings_filename(self._location_stem), "w") as f:
             f.write(json.dumps(self._get_output_display_settings(), sort_keys=False, indent=4))
+
+    def save(self):
+        """
+        Save settings without leaving.
+        """
+        self._save_settings()
 
     def done(self):
         self._save_settings()
@@ -571,6 +578,36 @@ class SegmentationStitcherModel(object):
     def set_display_node_points(self, show):
         self._set_raw_visibility('display_node_points', show)
 
+    def get_display_node_points_scale(self):
+        return self._display_settings["display_node_points_scale"]
+
+    def set_display_node_points_scale(self, node_points_scale):
+        """
+        Set scale of node points relative to 1/100th of harmonic mean segment length.
+        :param node_points_scale: Value from 0.0 to 100.0. 0.0 uses a point glyph otherwise it's a sphere.
+        """
+        if node_points_scale < 0.0:
+            node_points_scale = 0.0
+        elif node_points_scale > 100.0:
+            node_points_scale = 100.0
+        self._display_settings["display_node_points_scale"] = node_points_scale
+        mean_segment_length = self._stitcher.get_mean_segment_length()
+        glyph_width_small = 0.01 * mean_segment_length
+        segments = self._stitcher.get_segments()
+        for segment in segments:
+            region = segment.get_raw_region()
+            scene = region.getScene()
+            with ChangeManager(scene):
+                node_points = scene.findGraphicsByName('display_node_points')
+                if node_points.isValid():
+                    pointattr = node_points.getGraphicspointattributes()
+                    if node_points_scale > 0.0:
+                        pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_SPHERE)
+                        pointattr.setBaseSize([node_points_scale * glyph_width_small])
+                    else:
+                        pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_POINT)
+                        node_points.setRenderPointSize(3.0)
+
     def get_display_theme(self):
         return self._display_settings['display_theme']
 
@@ -725,10 +762,10 @@ class SegmentationStitcherModel(object):
                 if graphics.isValid():
                     graphics.setMaterial(material)
 
-    def get_radius_scale(self):
+    def get_display_radius_scale(self):
         return self._display_settings["display_radius_scale"]
 
-    def set_radius_scale(self, radius_scale):
+    def set_display_radius_scale(self, radius_scale):
         self._display_settings["display_radius_scale"] = radius_scale
         raw_line_graphics_names = [
             "display_line_general",
@@ -770,27 +807,7 @@ class SegmentationStitcherModel(object):
         root_region = self.get_root_region()
         root_scene = root_region.getScene()
         # prepare fields and calculate axis and glyph scaling
-        axes_scale = 1.0
-        glyph_width_small = 0.01
-
         segments = self._stitcher.get_segments()
-        minimums = maximums = None
-        for segment in segments:
-            region = segment.get_raw_region()
-            fieldmodule = region.getFieldmodule()
-            nodes = fieldmodule.findNodesetByFieldDomainType(Field.DOMAIN_TYPE_NODES)
-            coordinates = fieldmodule.findFieldByName("coordinates")
-            segment_minimums, segment_maximums = evaluate_field_nodeset_range(coordinates, nodes)
-            if segment_minimums:
-                if not minimums:
-                    minimums = segment_minimums
-                    maximums = segment_maximums
-                else:
-                    for c in range(3):
-                        if segment_minimums[c] < minimums[c]:
-                            minimums[c] = segment_minimums[c]
-                        elif segment_maximums[c] > maximums[c]:
-                            maximums[c] = segment_maximums[c]
         # create '.empty' group in all raw regions to show nothing when a required group doesn't exist there
         with HierarchicalChangeManager(self._stitcher.get_root_region()):
             for segment in segments:
@@ -799,16 +816,13 @@ class SegmentationStitcherModel(object):
                 empty_group = fieldmodule.createFieldGroup()
                 empty_group.setName(self._EMPTY_GROUP_NAME)
                 empty_group.setManaged(True)
-        if minimums:
-            max_range = 0.0
-            for c in range(3):
-                max_range = max(max_range, maximums[c] - minimums[c])
-            if max_range > 0.0:
-                while axes_scale * 10.0 < max_range:
-                    axes_scale *= 10.0
-                while axes_scale * 0.1 > max_range:
-                    axes_scale *= 0.1
-                glyph_width_small = 0.01 * max_range
+        mean_segment_length = self._stitcher.get_mean_segment_length()
+        glyph_width_small = 0.01 * mean_segment_length
+        axes_scale = 1.0
+        while axes_scale * 10.0 < mean_segment_length:
+            axes_scale *= 10.0
+        while axes_scale * 0.1 > mean_segment_length:
+            axes_scale *= 0.1
 
         with ChangeManager(root_scene):
             root_scene.removeAllGraphics()
@@ -821,7 +835,7 @@ class SegmentationStitcherModel(object):
             axes.setName("display_axes")
             axes.setVisibilityFlag(self._display_settings["display_axes"])
 
-            radius_scale = self.get_radius_scale()
+            radius_scale = self.get_display_radius_scale()
             for segment in segments:
                 region = segment.get_raw_region()
                 fieldmodule = region.getFieldmodule()
@@ -860,7 +874,7 @@ class SegmentationStitcherModel(object):
                     if marker_coordinates:
                         marker_points.setCoordinateField(marker_coordinates)
                     point_attr = marker_points.getGraphicspointattributes()
-                    point_attr.setBaseSize([0.1 * glyph_width_small, 0.1 * glyph_width_small, 0.1 * glyph_width_small])
+                    point_attr.setBaseSize([glyph_width_small, glyph_width_small, glyph_width_small])
                     point_attr.setGlyphShapeType(Glyph.SHAPE_TYPE_CROSS)
                     marker_points.setMaterial(self._materialmodule.findMaterialByName("white"))
                     marker_points.setName("display_marker_points")
@@ -873,7 +887,6 @@ class SegmentationStitcherModel(object):
                     if marker_coordinates:
                         marker_names.setCoordinateField(marker_coordinates)
                     point_attr = marker_names.getGraphicspointattributes()
-                    point_attr.setBaseSize([glyph_width_small, glyph_width_small, glyph_width_small])
                     point_attr.setGlyphShapeType(Glyph.SHAPE_TYPE_NONE)
                     if marker_name:
                         point_attr.setLabelField(marker_name)
@@ -886,10 +899,13 @@ class SegmentationStitcherModel(object):
                     node_points.setSubgroupField(node_group)
                     node_points.setCoordinateField(coordinates)
                     pointattr = node_points.getGraphicspointattributes()
-                    pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_SPHERE)
-                    pointattr.setBaseSize([0.5 * glyph_width_small])
-                    # pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_POINT)
-                    # node_points.setRenderPointSize(3.0)
+                    node_points_scale = self.get_display_node_points_scale()
+                    if node_points_scale > 0.0:
+                        pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_SPHERE)
+                        pointattr.setBaseSize([node_points_scale * glyph_width_small])
+                    else:
+                        pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_POINT)
+                        node_points.setRenderPointSize(3.0)
                     node_points.setMaterial(self._materialmodule.findMaterialByName('yellow'))
                     node_points.setName('display_node_points')
                     node_points.setVisibilityFlag(self.is_display_node_points())
@@ -974,7 +990,7 @@ class SegmentationStitcherModel(object):
             radius = fieldmodule.findFieldByName("radius")
             if not radius.isValid():
                 radius = None
-            radius_scale = self.get_radius_scale()
+            radius_scale = self.get_display_radius_scale()
             scene = region.getScene()
             with ChangeManager(scene):
                 scene.removeAllGraphics()
