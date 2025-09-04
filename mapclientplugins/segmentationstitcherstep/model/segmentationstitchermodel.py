@@ -46,9 +46,9 @@ class SegmentationStitcherModel(object):
         self._step_identifier = step_identifier
         self._category_graphics_info = [
             (AnnotationCategory.GENERAL, "display_line_general", "mid green"),
-            (AnnotationCategory.INDEPENDENT_NETWORK, "display_independent_networks", "purple"),
-            (AnnotationCategory.NETWORK_GROUP_1, "display_network_group_1", "mid blue"),
-            (AnnotationCategory.NETWORK_GROUP_2, "display_network_group_2", "orange")
+            (AnnotationCategory.INDEPENDENT_NETWORK, "display_line_independent_network", "purple"),
+            (AnnotationCategory.NETWORK_GROUP_1, "display_line_network_group_1", "mid blue"),
+            (AnnotationCategory.NETWORK_GROUP_2, "display_line_network_group_2", "orange")
         ]
         self._end_point_material_name = "grey50"
         self._init_graphics_modules()
@@ -62,15 +62,15 @@ class SegmentationStitcherModel(object):
             "display_line_general": True,
             "display_line_general_radius": False,
             "display_line_general_trans": False,
-            "display_network_group_1": True,
-            "display_network_group_1_radius": False,
-            "display_network_group_1_trans": False,
-            "display_network_group_2": True,
-            "display_network_group_2_radius": False,
-            "display_network_group_2_trans": False,
-            "display_independent_networks": True,
-            "display_independent_networks_radius": False,
-            "display_independent_networks_trans": False,
+            "display_line_network_group_1": True,
+            "display_line_network_group_1_radius": False,
+            "display_line_network_group_1_trans": False,
+            "display_line_network_group_2": True,
+            "display_line_network_group_2_radius": False,
+            "display_line_network_group_2_trans": False,
+            "display_line_independent_network": True,
+            "display_line_independent_network_radius": False,
+            "display_line_independent_network_trans": False,
             "display_end_point_directions": True,
             "display_end_point_best_fit_lines": True,
             "display_end_point_radius": False,
@@ -201,6 +201,15 @@ class SegmentationStitcherModel(object):
                     # these are not stored:
                     del display_settings['id']
                     del display_settings['version']
+                else:
+                    # migrate network display settings which have been renamed for consistency between categories
+                    # copy keys to a list to modify dict in the loop
+                    for key in list(display_settings.keys()):
+                        for old, new in [('display_network', 'display_line_network'),
+                                         ('display_independent_networks', 'display_line_independent_network')]:
+                            if key.startswith(old):
+                                new_key = key.replace(old, new, 1)
+                                display_settings[new_key] = display_settings.pop(key)
                 self._display_settings.update(display_settings)
 
     def _save_settings(self):
@@ -273,6 +282,7 @@ class SegmentationStitcherModel(object):
         if self._current_annotation:
             self._current_annotation.set_category_by_name(annotation_category_name)
             self._select_current_annotation()
+            self._update_working_graphics_for_category_visibility_changes()
 
     def set_current_annotation_align_weight(self, align_weight, set_by_category):
         """
@@ -372,7 +382,7 @@ class SegmentationStitcherModel(object):
         self._segment_data_changed(segment)
 
     def _get_visibility(self, graphics_name):
-        return self._display_settings[graphics_name]
+        return self._display_settings.get(graphics_name, False)
 
     def _set_root_visibility(self, graphics_name, show):
         self._display_settings[graphics_name] = show
@@ -401,6 +411,29 @@ class SegmentationStitcherModel(object):
             graphics = scene.findGraphicsByName(graphics_name)
             if graphics.isValid():
                 graphics.setVisibilityFlag(show)
+
+    def _get_segment_working_visible_end_group(self, segment):
+        """
+        Must call to get updated subgroup field when groups re-categorised.
+        :param segment: Stitcher Segment.
+        :return: Zinc Field to use as subgroup field for working end points graphics
+        """
+        fieldmodule = segment.get_working_fieldmodule()
+        with ChangeManager(fieldmodule):
+            working_end_group = segment.get_working_end_group()
+            visible_category_groups = None
+            for category in AnnotationCategory:
+                if category.is_connectable() and self.is_display_category(category):
+                    working_category_group = segment.get_working_category_group(category)
+                    if working_category_group and not working_category_group.isEmptyLocal():
+                        visible_category_groups = (
+                            fieldmodule.createFieldOr(visible_category_groups, working_category_group)
+                            if visible_category_groups else working_category_group)
+            if visible_category_groups:
+                visible_end_group = fieldmodule.createFieldAnd(working_end_group, visible_category_groups)
+            else:
+                visible_end_group = fieldmodule.createFieldConstant(0.0)  # False = nothing visible
+            return visible_end_group
 
     def _set_working_visibility(self, graphics_name, show):
         self._display_settings[graphics_name] = show
@@ -568,6 +601,9 @@ class SegmentationStitcherModel(object):
         self._display_settings['display_theme'] = display_theme_name
         self._apply_display_theme()
 
+    def is_display_category(self, category):
+        return self._get_visibility("display_line_" + category.get_lower_name())
+
     def is_display_line_general(self):
         return self._get_visibility("display_line_general")
 
@@ -586,59 +622,62 @@ class SegmentationStitcherModel(object):
     def set_display_line_general_trans(self, trans):
         self._set_line_trans("display_line_general", trans)
 
-    def is_display_independent_networks(self):
-        return self._get_visibility("display_independent_networks")
+    def is_display_line_independent_network(self):
+        return self._get_visibility("display_line_independent_network")
 
-    def set_display_independent_networks(self, show):
-        self._set_line_visibility("display_independent_networks", show)
+    def set_display_line_independent_network(self, show):
+        self._set_line_visibility("display_line_independent_network", show)
+        self._update_working_graphics_for_category_visibility_changes()
 
-    def is_display_independent_networks_radius(self):
-        return self._get_line_radius("display_independent_networks")
+    def is_display_line_independent_network_radius(self):
+        return self._get_line_radius("display_line_independent_network")
 
-    def set_display_independent_networks_radius(self, show_radius):
-        self._set_line_radius("display_independent_networks", show_radius)
+    def set_display_line_independent_network_radius(self, show_radius):
+        self._set_line_radius("display_line_independent_network", show_radius)
 
-    def is_display_independent_networks_trans(self):
-        return self._get_line_trans("display_independent_networks")
+    def is_display_line_independent_network_trans(self):
+        return self._get_line_trans("display_line_independent_network")
 
-    def set_display_independent_networks_trans(self, trans):
-        self._set_line_trans("display_independent_networks", trans)
+    def set_display_line_independent_network_trans(self, trans):
+        self._set_line_trans("display_line_independent_network", trans)
 
-    def is_display_network_group_1(self):
-        return self._get_visibility("display_network_group_1")
+    def is_display_line_network_group_1(self):
+        return self._get_visibility("display_line_network_group_1")
 
-    def set_display_network_group_1(self, show):
-        self._set_line_visibility("display_network_group_1", show)
+    def set_display_line_network_group_1(self, show):
+        self._set_line_visibility("display_line_network_group_1", show)
+        self._update_working_graphics_for_category_visibility_changes()
 
-    def is_display_network_group_1_radius(self):
-        return self._get_line_radius("display_network_group_1")
+    def is_display_line_network_group_1_radius(self):
+        return self._get_line_radius("display_line_network_group_1")
 
-    def set_display_network_group_1_radius(self, show_radius):
-        self._set_line_radius("display_network_group_1", show_radius)
+    def set_display_line_network_group_1_radius(self, show_radius):
+        self._set_line_radius("display_line_network_group_1", show_radius)
 
-    def is_display_network_group_1_trans(self):
-        return self._get_line_trans("display_network_group_1")
+    def is_display_line_network_group_1_trans(self):
+        return self._get_line_trans("display_line_network_group_1")
 
-    def set_display_network_group_1_trans(self, trans):
-        self._set_line_trans("display_network_group_1", trans)
+    def set_display_line_network_group_1_trans(self, trans):
+        self._set_line_trans("display_line_network_group_1", trans)
 
-    def is_display_network_group_2(self):
-        return self._get_visibility("display_network_group_2")
+    def is_display_line_network_group_2(self):
+        return self._get_visibility("display_line_network_group_2")
 
-    def set_display_network_group_2(self, show):
-        self._set_line_visibility("display_network_group_2", show)
+    def set_display_line_network_group_2(self, show):
+        self._set_line_visibility("display_line_network_group_2", show)
+        self._update_working_graphics_for_category_visibility_changes()
 
-    def is_display_network_group_2_radius(self):
-        return self._get_line_radius("display_network_group_2")
+    def is_display_line_network_group_2_radius(self):
+        return self._get_line_radius("display_line_network_group_2")
 
-    def set_display_network_group_2_radius(self, show_radius):
-        self._set_line_radius("display_network_group_2", show_radius)
+    def set_display_line_network_group_2_radius(self, show_radius):
+        self._set_line_radius("display_line_network_group_2", show_radius)
 
-    def is_display_network_group_2_trans(self):
-        return self._get_line_trans("display_network_group_2")
+    def is_display_line_network_group_2_trans(self):
+        return self._get_line_trans("display_line_network_group_2")
 
-    def set_display_network_group_2_trans(self, trans):
-        self._set_line_trans("display_network_group_2", trans)
+    def set_display_line_network_group_2_trans(self, trans):
+        self._set_line_trans("display_line_network_group_2", trans)
 
     def is_display_end_point_directions(self):
         return self._get_visibility("display_end_point_directions")
@@ -693,9 +732,9 @@ class SegmentationStitcherModel(object):
         self._display_settings["display_radius_scale"] = radius_scale
         raw_line_graphics_names = [
             "display_line_general",
-            "display_independent_networks",
-            "display_network_group_1",
-            "display_network_group_2"
+            "display_line_independent_network",
+            "display_line_network_group_1",
+            "display_line_network_group_2"
         ]
         segments = self._stitcher.get_segments()
         for segment in segments:
@@ -871,7 +910,7 @@ class SegmentationStitcherModel(object):
 
                 working_region = segment.get_working_region()
                 working_scene = working_region.getScene()
-                working_end_group = segment.get_working_end_group()
+                working_visible_end_group = self._get_segment_working_visible_end_group(segment)
                 end_point_coordinates, end_point_radius_direction, end_point_best_fit_line_orientation = (
                     segment.get_end_point_fields())
                 show_radius = self.is_display_end_point_radius()
@@ -885,7 +924,7 @@ class SegmentationStitcherModel(object):
 
                     end_point_directions = working_scene.createGraphicsPoints()
                     end_point_directions.setFieldDomainType(Field.DOMAIN_TYPE_DATAPOINTS)
-                    end_point_directions.setSubgroupField(working_end_group)
+                    end_point_directions.setSubgroupField(working_visible_end_group)
                     end_point_directions.setCoordinateField(end_point_coordinates)
                     point_attr = end_point_directions.getGraphicspointattributes()
                     point_attr.setBaseSize([0.0, 0.0, 0.0])
@@ -898,7 +937,7 @@ class SegmentationStitcherModel(object):
 
                     end_point_best_fit_lines = working_scene.createGraphicsPoints()
                     end_point_best_fit_lines.setFieldDomainType(Field.DOMAIN_TYPE_DATAPOINTS)
-                    end_point_best_fit_lines.setSubgroupField(working_end_group)
+                    end_point_best_fit_lines.setSubgroupField(working_visible_end_group)
                     end_point_best_fit_lines.setCoordinateField(end_point_coordinates)
                     point_attr = end_point_best_fit_lines.getGraphicspointattributes()
                     point_attr.setBaseSize([0.0, 0.0, 0.0])
@@ -911,6 +950,21 @@ class SegmentationStitcherModel(object):
 
             self._create_connection_graphics()
             self._apply_display_theme()
+
+    def _update_working_graphics_for_category_visibility_changes(self):
+        """
+        Call whenever annotation groups are rec-ategorised or category graphics visibility changed
+        to update visible working graphics.
+        """
+        segments = self._stitcher.get_segments()
+        for segment in segments:
+            working_region = segment.get_working_region()
+            working_scene = working_region.getScene()
+            working_visible_end_group = self._get_segment_working_visible_end_group(segment)
+            with ChangeManager(working_scene):
+                for graphics_name in ("display_end_point_directions", "display_end_point_best_fit_lines"):
+                    graphics = working_scene.findGraphicsByName(graphics_name)
+                    graphics.setSubgroupField(working_visible_end_group)
 
     def _create_connection_graphics(self, only_connection=None):
         for connection in [only_connection] if only_connection else self._stitcher.get_connections():
@@ -961,16 +1015,13 @@ class SegmentationStitcherModel(object):
             # enforce centre of rotation at midpoint of coordinates range
             midpoint = self._current_segment.get_coordinates_midpoint()
             rotation = self._current_segment.get_rotation()
-
             mat1 = euler_to_rotation_matrix([math.radians(deg) for deg in rotation])
             midpoint_translation1 = matrix_vector_mult(mat1, midpoint)
-
             mat2 = axis_angle_to_rotation_matrix(axis, angle)
             product_mat = matrix_mult(mat2, mat1)
             midpoint_translation2 = matrix_vector_mult(product_mat, midpoint)
-            # add
+            # correct translation of midpoint by new rotation:
             add_translation = sub(midpoint_translation1, midpoint_translation2)
-
             new_rotation = [math.degrees(rad) for rad in rotation_matrix_to_euler(product_mat)]
             self.set_segment_rotation(self._current_segment, new_rotation, add_translation)
 

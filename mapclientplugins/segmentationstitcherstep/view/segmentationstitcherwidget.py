@@ -140,15 +140,16 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.displayLineGeneral_checkBox.setChecked(self._model.is_display_line_general())
         self._ui.displayLineGeneralRadius_checkBox.setChecked(self._model.is_display_line_general_radius())
         self._ui.displayLineGeneralTrans_checkBox.setChecked(self._model.is_display_line_general_trans())
-        self._ui.displayIndepNetworks_checkBox.setChecked(self._model.is_display_independent_networks())
-        self._ui.displayIndepNetworksRadius_checkBox.setChecked(self._model.is_display_independent_networks_radius())
-        self._ui.displayIndepNetworksTrans_checkBox.setChecked(self._model.is_display_independent_networks_trans())
-        self._ui.displayNetworkGroup1_checkBox.setChecked(self._model.is_display_network_group_1())
-        self._ui.displayNetworkGroup1Radius_checkBox.setChecked(self._model.is_display_network_group_1_radius())
-        self._ui.displayNetworkGroup1Trans_checkBox.setChecked(self._model.is_display_network_group_1_trans())
-        self._ui.displayNetworkGroup2_checkBox.setChecked(self._model.is_display_network_group_2())
-        self._ui.displayNetworkGroup2Radius_checkBox.setChecked(self._model.is_display_network_group_2_radius())
-        self._ui.displayNetworkGroup2Trans_checkBox.setChecked(self._model.is_display_network_group_2_trans())
+        self._ui.displayIndepNetworks_checkBox.setChecked(self._model.is_display_line_independent_network())
+        self._ui.displayIndepNetworksRadius_checkBox.setChecked(
+            self._model.is_display_line_independent_network_radius())
+        self._ui.displayIndepNetworksTrans_checkBox.setChecked(self._model.is_display_line_independent_network_trans())
+        self._ui.displayNetworkGroup1_checkBox.setChecked(self._model.is_display_line_network_group_1())
+        self._ui.displayNetworkGroup1Radius_checkBox.setChecked(self._model.is_display_line_network_group_1_radius())
+        self._ui.displayNetworkGroup1Trans_checkBox.setChecked(self._model.is_display_line_network_group_1_trans())
+        self._ui.displayNetworkGroup2_checkBox.setChecked(self._model.is_display_line_network_group_2())
+        self._ui.displayNetworkGroup2Radius_checkBox.setChecked(self._model.is_display_line_network_group_2_radius())
+        self._ui.displayNetworkGroup2Trans_checkBox.setChecked(self._model.is_display_line_network_group_2_trans())
 
         self._refresh_radius_scale()
         self._ui.displayEndPointDirections_checkBox.setChecked(self._model.is_display_end_point_directions())
@@ -253,7 +254,6 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             set_by_category = self._ui.annotiationSetByCategory_checkBox.isChecked()
             self._model.set_current_annotation_align_weight(align_weight, set_by_category)
         self._refresh_current_annotation_settings()
-
 
     def get_model(self):
         return self._model
@@ -540,31 +540,31 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._model.set_display_line_general_trans(self._ui.displayLineGeneralTrans_checkBox.isChecked())
 
     def _displayIndepNetworks_clicked(self):
-        self._model.set_display_independent_networks(self._ui.displayIndepNetworks_checkBox.isChecked())
+        self._model.set_display_line_independent_network(self._ui.displayIndepNetworks_checkBox.isChecked())
 
     def _displayIndepNetworksRadius_clicked(self):
-        self._model.set_display_independent_networks_radius(self._ui.displayIndepNetworksRadius_checkBox.isChecked())
+        self._model.set_display_line_independent_network_radius(self._ui.displayIndepNetworksRadius_checkBox.isChecked())
 
     def _displayIndepNetworksTrans_clicked(self):
-        self._model.set_display_independent_networks_trans(self._ui.displayIndepNetworksTrans_checkBox.isChecked())
+        self._model.set_display_line_independent_network_trans(self._ui.displayIndepNetworksTrans_checkBox.isChecked())
 
     def _displayNetworkGroup1_clicked(self):
-        self._model.set_display_network_group_1(self._ui.displayNetworkGroup1_checkBox.isChecked())
+        self._model.set_display_line_network_group_1(self._ui.displayNetworkGroup1_checkBox.isChecked())
 
     def _displayNetworkGroup1Radius_clicked(self):
-        self._model.set_display_network_group_1_radius(self._ui.displayNetworkGroup1Radius_checkBox.isChecked())
+        self._model.set_display_line_network_group_1_radius(self._ui.displayNetworkGroup1Radius_checkBox.isChecked())
 
     def _displayNetworkGroup1Trans_clicked(self):
-        self._model.set_display_network_group_1_trans(self._ui.displayNetworkGroup1Trans_checkBox.isChecked())
+        self._model.set_display_line_network_group_1_trans(self._ui.displayNetworkGroup1Trans_checkBox.isChecked())
 
     def _displayNetworkGroup2_clicked(self):
-        self._model.set_display_network_group_2(self._ui.displayNetworkGroup2_checkBox.isChecked())
+        self._model.set_display_line_network_group_2(self._ui.displayNetworkGroup2_checkBox.isChecked())
 
     def _displayNetworkGroup2Radius_clicked(self):
-        self._model.set_display_network_group_2_radius(self._ui.displayNetworkGroup2Radius_checkBox.isChecked())
+        self._model.set_display_line_network_group_2_radius(self._ui.displayNetworkGroup2Radius_checkBox.isChecked())
 
     def _displayNetworkGroup2Trans_clicked(self):
-        self._model.set_display_network_group_2_trans(self._ui.displayNetworkGroup2Trans_checkBox.isChecked())
+        self._model.set_display_line_network_group_2_trans(self._ui.displayNetworkGroup2Trans_checkBox.isChecked())
 
     def _displayEndPointDirections_clicked(self):
         self._model.set_display_end_point_directions(self._ui.displayEndPointDirections_checkBox.isChecked())
