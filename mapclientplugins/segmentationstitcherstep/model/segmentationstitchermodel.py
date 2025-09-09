@@ -326,9 +326,14 @@ class SegmentationStitcherModel(object):
         connection = connections[0] if connections else None
         self.set_current_connection(connection)
 
-    def connection_optimise_transformation(self, connection):
-        connection.optimise_transformation()
-        segment = connection.get_segments()[1]
+    def connection_auto_align_segment(self, connection, dependent_segment_index):
+        """
+        Auto-align the segment in connection with index.
+        :param connection: Stitcher Connection.
+        :param dependent_segment_index: Index (0 or 1) of segment to auto-align.
+        """
+        connection.auto_align_segment(dependent_segment_index)
+        segment = connection.get_segments()[dependent_segment_index]
         self._set_segment_scene_transformation(segment)
         self._segment_data_changed(segment)
 

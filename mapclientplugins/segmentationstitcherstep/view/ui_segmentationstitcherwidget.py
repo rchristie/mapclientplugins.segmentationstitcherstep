@@ -109,38 +109,11 @@ class Ui_SegmentationStitcherWidget(object):
         self.connections_groupBox.setObjectName(u"connections_groupBox")
         self.formLayout_3 = QFormLayout(self.connections_groupBox)
         self.formLayout_3.setObjectName(u"formLayout_3")
-        self.connectionsControls_frame = QFrame(self.connections_groupBox)
-        self.connectionsControls_frame.setObjectName(u"connectionsControls_frame")
-        sizePolicy.setHeightForWidth(self.connectionsControls_frame.sizePolicy().hasHeightForWidth())
-        self.connectionsControls_frame.setSizePolicy(sizePolicy)
-        self.connectionsControls_frame.setFrameShape(QFrame.Shape.NoFrame)
-        self.connectionsControls_frame.setFrameShadow(QFrame.Shadow.Plain)
-        self.horizontalLayout_11 = QHBoxLayout(self.connectionsControls_frame)
-        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
-        self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
-        self.connectionsNew_pushButton = QPushButton(self.connectionsControls_frame)
-        self.connectionsNew_pushButton.setObjectName(u"connectionsNew_pushButton")
-
-        self.horizontalLayout_11.addWidget(self.connectionsNew_pushButton)
-
-        self.connectionsDelete_pushButton = QPushButton(self.connectionsControls_frame)
-        self.connectionsDelete_pushButton.setObjectName(u"connectionsDelete_pushButton")
-
-        self.horizontalLayout_11.addWidget(self.connectionsDelete_pushButton)
-
-
-        self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.connectionsControls_frame)
-
         self.connections_listWidget = QListWidget(self.connections_groupBox)
         self.connections_listWidget.setObjectName(u"connections_listWidget")
         self.connections_listWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
-        self.formLayout_3.setWidget(1, QFormLayout.SpanningRole, self.connections_listWidget)
-
-        self.connectionsOptimizeAlignment_pushButton = QPushButton(self.connections_groupBox)
-        self.connectionsOptimizeAlignment_pushButton.setObjectName(u"connectionsOptimizeAlignment_pushButton")
-
-        self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.connectionsOptimizeAlignment_pushButton)
+        self.formLayout_3.setWidget(0, QFormLayout.SpanningRole, self.connections_listWidget)
 
 
         self.verticalLayout.addWidget(self.connections_groupBox)
@@ -587,6 +560,9 @@ class Ui_SegmentationStitcherWidget(object):
         self.dockWidget.setWindowTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Control Panel", None))
         self.identifier_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Identifier", None))
         self.segments_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Segments:", None))
+#if QT_CONFIG(tooltip)
+        self.segments_listWidget.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Right-click for segments menu</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.segmentTransformation_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Transformation:", None))
         self.segmentRotation_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Rotation:", None))
 #if QT_CONFIG(tooltip)
@@ -597,12 +573,9 @@ class Ui_SegmentationStitcherWidget(object):
         self.segmentTranslation_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Translation in x, y, z for the selected segment above.</p><p>To set interactively: with the mouse points in the graphics area, hold down the A-key and middle mouse button and drag to translate.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.connections_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Connections:", None))
-        self.connectionsNew_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"New...", None))
-        self.connectionsDelete_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Delete...", None))
 #if QT_CONFIG(tooltip)
-        self.connectionsOptimizeAlignment_pushButton.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Optimize  transformation of the second segment in the selected connection to align its network end points with those of the first segment.</p></body></html>", None))
+        self.connections_listWidget.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Right-click for connections menu</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.connectionsOptimizeAlignment_pushButton.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Optimize Alignment...", None))
         self.displayMarkerNames_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Marker names", None))
         self.displayMarkerPoints_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Marker points", None))
         self.displayAxes_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Axes", None))

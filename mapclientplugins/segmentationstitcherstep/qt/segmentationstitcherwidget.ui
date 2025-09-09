@@ -96,6 +96,9 @@
             <property name="contextMenuPolicy">
              <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
             </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Right-click for segments menu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
            </widget>
           </item>
           <item>
@@ -153,64 +156,13 @@
           <string>Connections:</string>
          </property>
          <layout class="QFormLayout" name="formLayout_3">
-          <item row="0" column="0">
-           <widget class="QFrame" name="connectionsControls_frame">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::Shape::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Shadow::Plain</enum>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_11">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QPushButton" name="connectionsNew_pushButton">
-               <property name="text">
-                <string>New...</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="connectionsDelete_pushButton">
-               <property name="text">
-                <string>Delete...</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
+          <item row="0" column="0" colspan="2">
            <widget class="QListWidget" name="connections_listWidget">
             <property name="contextMenuPolicy">
              <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="connectionsOptimizeAlignment_pushButton">
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Optimize  transformation of the second segment in the selected connection to align its network end points with those of the first segment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="text">
-             <string>Optimize Alignment...</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Right-click for connections menu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>

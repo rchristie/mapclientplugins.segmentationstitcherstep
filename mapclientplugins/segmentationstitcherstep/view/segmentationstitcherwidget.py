@@ -75,10 +75,6 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.segmentTranslation_lineEdit.editingFinished.connect(self._segmentTranslation_lineEditChanged)
 
         self._ui.connections_listWidget.customContextMenuRequested.connect(self._connections_listWidget_contextMenu)
-        self._ui.connectionsNew_pushButton.clicked.connect(self._connectionNew_buttonClicked)
-        self._ui.connectionsDelete_pushButton.clicked.connect(self._connectionDelete_buttonClicked)
-        self._ui.connectionsOptimizeAlignment_pushButton.clicked.connect(
-            self._connectionsOptimizeAlignment_buttonPressed)
 
         self._ui.displayAxes_checkBox.clicked.connect(self._displayAxes_clicked)
         self._ui.displayMarkerPoints_checkBox.clicked.connect(self._displayMarkerPoints_clicked)
@@ -462,33 +458,49 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             item = self._ui.connections_listWidget.item(i)
             item.setCheckState(QtCore.Qt.CheckState.Checked if visible else QtCore.Qt.CheckState.Unchecked)
 
-    def _connections_listWidget_look_at_connection(self):
-        selected_item = self._ui.connections_listWidget.currentItem()
-        if selected_item:
-            clicked_index = self._ui.connections_listWidget.row(selected_item)
+    def _update_current_connection(self):
+        """
+        Get the current connection pointed at in the connections_listWidget.
+        :return: Stitcher Connection, current_item in list widget
+        """
+        current_item = self._ui.connections_listWidget.currentItem()
+        if current_item:
+            connection_index = self._ui.connections_listWidget.row(current_item)
             stitcher = self._model.get_stitcher()
             connections = stitcher.get_connections()
-            connection = connections[clicked_index]
+            connection = connections[connection_index]
+        else:
+            connection = None
+        self._model.set_current_connection(connection)
+        return connection, current_item
+
+    def _connections_listWidget_look_at_connection(self):
+        connection = self._model.get_current_connection()
+        if connection:
             lookat_point = connection.get_coordinates_midpoint()
             if lookat_point:
                 sceneviewer = self._ui.alignmentsceneviewerwidget.getSceneviewer()
                 sceneviewer.setLookatParametersNonSkew(
                     sceneviewer.getEyePosition()[1], lookat_point, sceneviewer.getUpVector()[1])
-            selected_item.setCheckState(QtCore.Qt.CheckState.Checked)
-            self._connections_list_itemClicked(selected_item)
+            current_item = self._ui.connections_listWidget.currentItem()
+            current_item.setCheckState(QtCore.Qt.CheckState.Checked)
 
-    def _connections_listWidget_contextMenu(self, pos):
-        menu = QtWidgets.QMenu(self._ui.connections_listWidget)
-        action1 = menu.addAction("Hide all")
-        action2 = menu.addAction("Show all")
-        action3 = menu.addAction("Look at connection")
-        action1.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(False))
-        action2.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(True))
-        action3.triggered.connect(self._connections_listWidget_look_at_connection)
-        # Display the menu at the global position of the mouse click
-        menu.exec(self._ui.connections_listWidget.mapToGlobal(pos))
+    def _connections_listWidget_auto_align_segment(self, dependent_segment_index):
+        connection = self._model.get_current_connection()
+        if connection:
+            segments = connection.get_segments()
+            dependent_segment = segments[dependent_segment_index]
+            fixed_segment_index = 1 if (dependent_segment_index == 0) else 0
+            fixed_segment_name = connection.get_segments()[fixed_segment_index].get_name()
+            reply = QtWidgets.QMessageBox.question(
+                self, 'Confirm auto-align',
+                'Auto-align ' + dependent_segment.get_name() + ' relative to ' + fixed_segment_name + '?',
+                QtWidgets.QMessageBox.StandardButton.Ok | QtWidgets.QMessageBox.StandardButton.Cancel,
+                QtWidgets.QMessageBox.StandardButton.Cancel)
+            if reply == QtWidgets.QMessageBox.StandardButton.Ok:
+                self._model.connection_auto_align_segment(connection, dependent_segment_index)
 
-    def _connectionNew_buttonClicked(self):
+    def _connections_listWidget_create_connection(self):
         stitcher = self._model.get_stitcher()
         new_connection_dialog = NewConnectionDialog(self, stitcher)
         if new_connection_dialog.exec():
@@ -497,31 +509,43 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             if connection:
                 self._build_connections_list()
 
-    def _connectionDelete_buttonClicked(self):
+    def _connections_listWidget_delete_connection(self):
         connection = self._model.get_current_connection()
-        if not connection:
-            return
-        reply = QtWidgets.QMessageBox.question(
-            self, 'Confirm action',
-            'Delete connection \'' + connection.get_name() + '\'?',
-            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
-            QtWidgets.QMessageBox.StandardButton.No)
-        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
-            self._model.delete_connection(connection)
-            self._build_connections_list()
+        if connection:
+            reply = QtWidgets.QMessageBox.question(
+                self, 'Confirm action',
+                'Delete connection \'' + connection.get_name() + '\'?',
+                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.No)
+            if reply == QtWidgets.QMessageBox.StandardButton.Yes:
+                self._model.delete_connection(connection)
+                self._build_connections_list()
 
-    def _connectionsOptimizeAlignment_buttonPressed(self):
+    def _connections_listWidget_contextMenu(self, pos):
+        menu = QtWidgets.QMenu(self._ui.connections_listWidget)
+        self._update_current_connection()
         connection = self._model.get_current_connection()
-        dependent_segment = connection.get_segments()[1]
-        reply = QtWidgets.QMessageBox.question(
-            self, 'Confirm action',
-            'Optimise transformation of segment \'' + dependent_segment.get_name() + '\'?',
-            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
-            QtWidgets.QMessageBox.StandardButton.No)
-        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
-            self._model.connection_optimise_transformation(connection)
-            if self._model.get_current_segment() == dependent_segment:
-                self._refresh_segment_data()
+        if connection:
+            actionHideAll = menu.addAction("Hide all")
+            actionShowAll = menu.addAction("Show all")
+            actionLookAt = menu.addAction("Look at connection")
+            actionHideAll.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(False))
+            actionShowAll.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(True))
+            actionLookAt.triggered.connect(self._connections_listWidget_look_at_connection)
+            menu.addSeparator()
+            segments = connection.get_segments()
+            actionAutoAlign0 = menu.addAction("Auto-align " + segments[0].get_name() + "...")
+            actionAutoAlign1 = menu.addAction("Auto-align " + segments[1].get_name() + "...")
+            actionAutoAlign0.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(0))
+            actionAutoAlign1.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(1))
+            menu.addSeparator()
+        actionCreate = menu.addAction("Create connection...")
+        actionCreate.triggered.connect(self._connections_listWidget_create_connection)
+        if connection:
+            actionDelete = menu.addAction("Delete connection...")
+            actionDelete.triggered.connect(self._connections_listWidget_delete_connection)
+        # Display the menu at the global position of the mouse click
+        menu.exec(self._ui.connections_listWidget.mapToGlobal(pos))
 
     def _displayAxes_clicked(self):
         self._model.set_display_axes(self._ui.displayAxes_checkBox.isChecked())
