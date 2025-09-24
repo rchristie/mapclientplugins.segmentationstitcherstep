@@ -474,6 +474,16 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._model.set_current_connection(connection)
         return connection, current_item
 
+    def _connections_listWidget_set_link_locking_from_selection(self, lock):
+        connection = self._model.get_current_connection()
+        if connection:
+            self._model.connection_set_link_locking_from_selection(connection, lock)
+
+    def _connections_listWidget_select_locked_links(self):
+        connection = self._model.get_current_connection()
+        if connection:
+            self._model.connection_add_locked_links_to_selection(connection)
+
     def _connections_listWidget_look_at_connection(self):
         connection = self._model.get_current_connection()
         if connection:
@@ -534,10 +544,16 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             actionLookAt.triggered.connect(self._connections_listWidget_look_at_connection)
             menu.addSeparator()
             segments = connection.get_segments()
+            actionLockSelectedLinks = menu.addAction("Lock selected links")
+            actionUnlockSelectedLinks = menu.addAction("Unlock selected links")
+            actionSelectLockedLinks = menu.addAction("Select locked links")
             actionAutoAlign0 = menu.addAction("Auto-align " + segments[0].get_name() + "...")
             actionAutoAlign1 = menu.addAction("Auto-align " + segments[1].get_name() + "...")
             actionAutoAlign0.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(0))
             actionAutoAlign1.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(1))
+            actionLockSelectedLinks.triggered.connect(lambda: self._connections_listWidget_set_link_locking_from_selection(True))
+            actionUnlockSelectedLinks.triggered.connect(lambda: self._connections_listWidget_set_link_locking_from_selection(False))
+            actionSelectLockedLinks.triggered.connect(self._connections_listWidget_select_locked_links)
             menu.addSeparator()
         actionCreate = menu.addAction("Create connection...")
         actionCreate.triggered.connect(self._connections_listWidget_create_connection)

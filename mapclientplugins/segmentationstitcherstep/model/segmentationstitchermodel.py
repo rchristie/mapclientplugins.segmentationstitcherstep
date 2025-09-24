@@ -326,6 +326,21 @@ class SegmentationStitcherModel(object):
         connection = connections[0] if connections else None
         self.set_current_connection(connection)
 
+    def connection_set_link_locking_from_selection(self, connection, lock):
+        """
+        Lock or unlock connection links for nodes matching any selected visualization elements.
+        :param connection: The connection to set locking for.
+        :param lock: True to lock, False to unlock.
+        """
+        connection.set_link_locking_from_selection(lock)
+
+    def connection_add_locked_links_to_selection(self, connection):
+        """
+        Add locked links for this connection to the scene selection.
+        :param connection: The connection to select locked links from.
+        """
+        connection.add_locked_links_to_selection()
+
     def connection_auto_align_segment(self, connection, dependent_segment_index):
         """
         Auto-align the segment in connection with index.
