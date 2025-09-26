@@ -1,13 +1,10 @@
 """
 Segmentation stitcher with visualisation.
 """
-import math
 import os
 import json
 
-from cmlibs.maths.vectorops import add, axis_angle_to_rotation_matrix, euler_to_rotation_matrix, matrix_mult, \
-    matrix_vector_mult, rotation_matrix_to_euler, sub
-from cmlibs.utils.zinc.finiteelement import evaluate_field_nodeset_range
+from cmlibs.maths.vectorops import add, euler_to_rotation_matrix
 from cmlibs.utils.zinc.general import ChangeManager, HierarchicalChangeManager
 from cmlibs.utils.zinc.field import get_group_list
 from cmlibs.utils.zinc.group import group_add_group_local_contents
@@ -375,7 +372,7 @@ class SegmentationStitcherModel(object):
         Set the scene 4x4 matrix transformation to match the rotation and translation of segment.
         :param segment: Segment to transform.
         """
-        rotation = [math.radians(angle_degrees) for angle_degrees in segment.get_rotation()]
+        rotation = segment.get_rotation_radians()
         rotation_matrix_3x3 = euler_to_rotation_matrix(rotation)
         translation = segment.get_translation()
         transformation_matrix_4x4 = (
@@ -386,16 +383,13 @@ class SegmentationStitcherModel(object):
         base_scene = segment.get_base_region().getScene()
         base_scene.setTransformationMatrix(transformation_matrix_4x4)
 
-    def set_segment_rotation(self, segment, rotation, add_translation=None):
+    def set_segment_rotation_degrees(self, segment, rotation):
         """
         Set the segment's transformation and update graphics transformation.
         :param segment: Segment to modify.
         :param rotation: 3 Euler angles in degrees.
-        :param add_translation: Optional additional translation to correct for centre of rotation.
         """
-        if add_translation:
-            segment.set_translation(add(segment.get_translation(), add_translation), notify=False)
-        segment.set_rotation(rotation)
+        segment.set_rotation_degrees(rotation)
         self._set_segment_scene_transformation(segment)
         self._segment_data_changed(segment)
 
@@ -1050,16 +1044,9 @@ class SegmentationStitcherModel(object):
         if self._current_segment:
             # enforce centre of rotation at midpoint of coordinates range
             midpoint = self._current_segment.get_coordinates_midpoint()
-            rotation = self._current_segment.get_rotation()
-            mat1 = euler_to_rotation_matrix([math.radians(deg) for deg in rotation])
-            midpoint_translation1 = matrix_vector_mult(mat1, midpoint)
-            mat2 = axis_angle_to_rotation_matrix(axis, angle)
-            product_mat = matrix_mult(mat2, mat1)
-            midpoint_translation2 = matrix_vector_mult(product_mat, midpoint)
-            # correct translation of midpoint by new rotation:
-            add_translation = sub(midpoint_translation1, midpoint_translation2)
-            new_rotation = [math.degrees(rad) for rad in rotation_matrix_to_euler(product_mat)]
-            self.set_segment_rotation(self._current_segment, new_rotation, add_translation)
+            self._current_segment.rotate_about_point_axis(midpoint, axis, angle, notify=False)
+            # call this to notify and update widgets
+            self.set_segment_rotation_degrees(self._current_segment, self._current_segment.get_rotation_degrees())
 
     def scaleModel(self, factor):
         pass

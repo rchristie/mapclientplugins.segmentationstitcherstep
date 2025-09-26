@@ -354,7 +354,7 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
     def _refresh_segment_data(self):
         segment = self._model.get_current_segment()
         realFormat = "{:.7g}"
-        rotation = segment.get_rotation()
+        rotation = segment.get_rotation_degrees()
         self._ui.segmentRotation_lineEdit.setText(", ".join(realFormat.format(value) for value in rotation))
         translation = segment.get_translation()
         self._ui.segmentTranslation_lineEdit.setText(", ".join(realFormat.format(value) for value in translation))
@@ -400,7 +400,7 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
                 rotation.append(0.0)
             if len(rotation) > 3:
                 rotation = rotation[:3]
-            self._model.set_segment_rotation(segment, rotation)
+            self._model.set_segment_rotation_degrees(segment, rotation)
         else:
             self._refresh_segment_data()
 
