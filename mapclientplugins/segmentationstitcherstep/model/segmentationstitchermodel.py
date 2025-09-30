@@ -323,6 +323,13 @@ class SegmentationStitcherModel(object):
         connection = connections[0] if connections else None
         self.set_current_connection(connection)
 
+    def connection_link_and_lock_selected_ends(self, connection):
+        """
+        Make and lock links between selected end points in segments of connection
+        :param connection: The connection to modify.
+        """
+        connection.link_and_lock_selected_ends()
+
     def connection_set_link_locking_from_selection(self, connection, lock):
         """
         Lock or unlock connection links for nodes matching any selected visualization elements.

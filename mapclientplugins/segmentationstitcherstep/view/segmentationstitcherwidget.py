@@ -383,12 +383,12 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
 
     def _segments_listWidget_contextMenu(self, pos):
         menu = QtWidgets.QMenu(self._ui.segments_listWidget)
-        action1 = menu.addAction("Hide all")
-        action2 = menu.addAction("Show all")
-        action3 = menu.addAction("Look at segment")
-        action1.triggered.connect(lambda: self._segments_listWidget_set_all_visibility(False))
-        action2.triggered.connect(lambda: self._segments_listWidget_set_all_visibility(True))
-        action3.triggered.connect(self._segments_listWidget_look_at_segment)
+        action_hide_all = menu.addAction("Hide all")
+        action_show_all = menu.addAction("Show all")
+        action_look_at = menu.addAction("Look at segment")
+        action_hide_all.triggered.connect(lambda: self._segments_listWidget_set_all_visibility(False))
+        action_show_all.triggered.connect(lambda: self._segments_listWidget_set_all_visibility(True))
+        action_look_at.triggered.connect(self._segments_listWidget_look_at_segment)
         # Display the menu at the global position of the mouse click
         menu.exec(self._ui.segments_listWidget.mapToGlobal(pos))
 
@@ -458,32 +458,6 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             item = self._ui.connections_listWidget.item(i)
             item.setCheckState(QtCore.Qt.CheckState.Checked if visible else QtCore.Qt.CheckState.Unchecked)
 
-    def _update_current_connection(self):
-        """
-        Get the current connection pointed at in the connections_listWidget.
-        :return: Stitcher Connection, current_item in list widget
-        """
-        current_item = self._ui.connections_listWidget.currentItem()
-        if current_item:
-            connection_index = self._ui.connections_listWidget.row(current_item)
-            stitcher = self._model.get_stitcher()
-            connections = stitcher.get_connections()
-            connection = connections[connection_index]
-        else:
-            connection = None
-        self._model.set_current_connection(connection)
-        return connection, current_item
-
-    def _connections_listWidget_set_link_locking_from_selection(self, lock):
-        connection = self._model.get_current_connection()
-        if connection:
-            self._model.connection_set_link_locking_from_selection(connection, lock)
-
-    def _connections_listWidget_select_locked_links(self):
-        connection = self._model.get_current_connection()
-        if connection:
-            self._model.connection_add_locked_links_to_selection(connection)
-
     def _connections_listWidget_look_at_connection(self):
         connection = self._model.get_current_connection()
         if connection:
@@ -494,6 +468,21 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
                     sceneviewer.getEyePosition()[1], lookat_point, sceneviewer.getUpVector()[1])
             current_item = self._ui.connections_listWidget.currentItem()
             current_item.setCheckState(QtCore.Qt.CheckState.Checked)
+
+    def _connections_listWidget_link_and_lock_selected_ends(self):
+        connection = self._model.get_current_connection()
+        if connection:
+            self._model.connection_link_and_lock_selected_ends(connection)
+
+    def _connections_listWidget_set_link_locking_from_selection(self, lock):
+        connection = self._model.get_current_connection()
+        if connection:
+            self._model.connection_set_link_locking_from_selection(connection, lock)
+
+    def _connections_listWidget_select_locked_links(self):
+        connection = self._model.get_current_connection()
+        if connection:
+            self._model.connection_add_locked_links_to_selection(connection)
 
     def _connections_listWidget_auto_align_segment(self, dependent_segment_index):
         connection = self._model.get_current_connection()
@@ -531,35 +520,58 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
                 self._model.delete_connection(connection)
                 self._build_connections_list()
 
+    def _update_current_connection(self):
+        """
+        Get the current connection pointed at in the connections_listWidget.
+        :return: Stitcher Connection, current_item in list widget
+        """
+        current_item = self._ui.connections_listWidget.currentItem()
+        if current_item:
+            connection_index = self._ui.connections_listWidget.row(current_item)
+            stitcher = self._model.get_stitcher()
+            connections = stitcher.get_connections()
+            connection = connections[connection_index]
+        else:
+            connection = None
+        self._model.set_current_connection(connection)
+        return connection, current_item
+
     def _connections_listWidget_contextMenu(self, pos):
         menu = QtWidgets.QMenu(self._ui.connections_listWidget)
         self._update_current_connection()
         connection = self._model.get_current_connection()
         if connection:
-            actionHideAll = menu.addAction("Hide all")
-            actionShowAll = menu.addAction("Show all")
-            actionLookAt = menu.addAction("Look at connection")
-            actionHideAll.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(False))
-            actionShowAll.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(True))
-            actionLookAt.triggered.connect(self._connections_listWidget_look_at_connection)
+            action_hide_all = menu.addAction("Hide all")
+            action_show_all = menu.addAction("Show all")
+            action_look_at = menu.addAction("Look at connection")
+            action_hide_all.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(False))
+            action_show_all.triggered.connect(lambda: self._connections_listWidget_set_all_visibility(True))
+            action_look_at.triggered.connect(self._connections_listWidget_look_at_connection)
             menu.addSeparator()
             segments = connection.get_segments()
-            actionLockSelectedLinks = menu.addAction("Lock selected links")
-            actionUnlockSelectedLinks = menu.addAction("Unlock selected links")
-            actionSelectLockedLinks = menu.addAction("Select locked links")
-            actionAutoAlign0 = menu.addAction("Auto-align " + segments[0].get_name() + "...")
-            actionAutoAlign1 = menu.addAction("Auto-align " + segments[1].get_name() + "...")
-            actionAutoAlign0.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(0))
-            actionAutoAlign1.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(1))
-            actionLockSelectedLinks.triggered.connect(lambda: self._connections_listWidget_set_link_locking_from_selection(True))
-            actionUnlockSelectedLinks.triggered.connect(lambda: self._connections_listWidget_set_link_locking_from_selection(False))
-            actionSelectLockedLinks.triggered.connect(self._connections_listWidget_select_locked_links)
+            action_link_and_lock_selected_ends = menu.addAction("Link and lock selected ends")
+            action_link_and_lock_selected_ends.setToolTip("Make and lock links between selected end points in segments")
+            action_lock_selected_links = menu.addAction("Lock selected links")
+            action_lock_selected_links.setToolTip("Lock selected links in this connection until unlocked")
+            action_unlock_selected_links = menu.addAction("Unlock selected links")
+            action_select_locked_links = menu.addAction("Select locked links")
+            action_link_and_lock_selected_ends.triggered.connect(
+                self._connections_listWidget_link_and_lock_selected_ends)
+            action_lock_selected_links.triggered.connect(
+                lambda: self._connections_listWidget_set_link_locking_from_selection(True))
+            action_unlock_selected_links.triggered.connect(
+                lambda: self._connections_listWidget_set_link_locking_from_selection(False))
+            action_select_locked_links.triggered.connect(self._connections_listWidget_select_locked_links)
+            action_auto_align0 = menu.addAction("Auto-align " + segments[0].get_name() + "...")
+            action_auto_align1 = menu.addAction("Auto-align " + segments[1].get_name() + "...")
+            action_auto_align0.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(0))
+            action_auto_align1.triggered.connect(lambda: self._connections_listWidget_auto_align_segment(1))
             menu.addSeparator()
-        actionCreate = menu.addAction("Create connection...")
-        actionCreate.triggered.connect(self._connections_listWidget_create_connection)
+        action_create = menu.addAction("Create connection...")
+        action_create.triggered.connect(self._connections_listWidget_create_connection)
         if connection:
-            actionDelete = menu.addAction("Delete connection...")
-            actionDelete.triggered.connect(self._connections_listWidget_delete_connection)
+            action_delete = menu.addAction("Delete connection...")
+            action_delete.triggered.connect(self._connections_listWidget_delete_connection)
         # Display the menu at the global position of the mouse click
         menu.exec(self._ui.connections_listWidget.mapToGlobal(pos))
 
