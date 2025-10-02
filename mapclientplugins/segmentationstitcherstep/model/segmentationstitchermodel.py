@@ -1079,13 +1079,22 @@ class SegmentationStitcherModel(object):
         bounding_box = raw_scene.findGraphicsByName("bounding_box")
         bounding_box.setVisibilityFlag(show)
 
+    def _is_current_segment_alignable(self):
+        """
+        :return: True if current segment is visible and its transformation is not locked, otherwise False.
+        """
+        if self._current_segment:
+            if self._current_segment.get_base_region().getScene().getVisibilityFlag():
+                return True
+        return False
+
     # === Align Utilities ===
 
     def isStateAlign(self):
         return True
 
     def rotateModel(self, axis, angle):
-        if self._current_segment:
+        if self._is_current_segment_alignable():
             # enforce centre of rotation at midpoint of coordinates range
             midpoint = self._current_segment.get_coordinates_midpoint()
             self._current_segment.rotate_about_point_axis(midpoint, axis, angle, notify=False)
@@ -1096,9 +1105,10 @@ class SegmentationStitcherModel(object):
         pass
 
     def offsetModel(self, relative_offset):
-        translation = self._current_segment.get_translation()
-        new_translation = add(translation, relative_offset)
-        self.set_segment_translation(self._current_segment, new_translation)
+        if self._is_current_segment_alignable():
+            translation = self._current_segment.get_translation()
+            new_translation = add(translation, relative_offset)
+            self.set_segment_translation(self._current_segment, new_translation)
 
     def interactionStart(self):
         if self._current_segment:
