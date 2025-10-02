@@ -345,13 +345,17 @@ class SegmentationStitcherModel(object):
         """
         connection.add_locked_links_to_selection()
 
-    def connection_auto_align_segment(self, connection, dependent_segment_index):
+    def connection_auto_align_segment(self, connection, dependent_segment_index,
+                                      phase1_align, gap_distance, phase_2_optimize):
         """
         Auto-align the segment in connection with index.
         :param connection: Stitcher Connection.
         :param dependent_segment_index: Index (0 or 1) of segment to auto-align.
+        :param phase1_align: True if performing phase 1 align ends.
+        :param gap_distance: Gap distance to apply in phase 1. Can be negative to overlap.
+        :param phase_2_optimize: True if performing phase 2 optimize transformation in plane.
         """
-        connection.auto_align_segment(dependent_segment_index)
+        connection.auto_align_segment(dependent_segment_index, phase1_align, gap_distance, phase_2_optimize)
         segment = connection.get_segments()[dependent_segment_index]
         self._set_segment_scene_transformation(segment)
         self._segment_data_changed(segment)

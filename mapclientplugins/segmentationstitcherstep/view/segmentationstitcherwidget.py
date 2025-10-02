@@ -8,6 +8,7 @@ from PySide6 import QtCore, QtWidgets
 from cmlibs.maths.vectorops import dot, magnitude, mult, normalize, sub
 from cmlibs.widgets.utils import parse_real_non_negative, parse_vector
 
+from mapclientplugins.segmentationstitcherstep.view.autoaligndialog import AutoAlignDialog
 from mapclientplugins.segmentationstitcherstep.view.newconnectiondialog import NewConnectionDialog
 from mapclientplugins.segmentationstitcherstep.view.ui_segmentationstitcherwidget import Ui_SegmentationStitcherWidget
 from segmentationstitcher.annotation import AnnotationCategory
@@ -487,17 +488,11 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
     def _connections_listWidget_auto_align_segment(self, dependent_segment_index):
         connection = self._model.get_current_connection()
         if connection:
-            segments = connection.get_segments()
-            dependent_segment = segments[dependent_segment_index]
-            fixed_segment_index = 1 if (dependent_segment_index == 0) else 0
-            fixed_segment_name = connection.get_segments()[fixed_segment_index].get_name()
-            reply = QtWidgets.QMessageBox.question(
-                self, 'Confirm auto-align',
-                'Auto-align ' + dependent_segment.get_name() + ' relative to ' + fixed_segment_name + '?',
-                QtWidgets.QMessageBox.StandardButton.Ok | QtWidgets.QMessageBox.StandardButton.Cancel,
-                QtWidgets.QMessageBox.StandardButton.Cancel)
-            if reply == QtWidgets.QMessageBox.StandardButton.Ok:
-                self._model.connection_auto_align_segment(connection, dependent_segment_index)
+            auto_align_dialog = AutoAlignDialog(self, connection, dependent_segment_index)
+            if auto_align_dialog.exec():
+                phase1_align, gap_distance, phase_2_optimize = auto_align_dialog.get_options()
+                self._model.connection_auto_align_segment(
+                    connection, dependent_segment_index, phase1_align, gap_distance, phase_2_optimize)
 
     def _connections_listWidget_create_connection(self):
         stitcher = self._model.get_stitcher()
