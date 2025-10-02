@@ -4,9 +4,9 @@ Segmentation stitcher with visualisation.
 import os
 import json
 
-from cmlibs.maths.vectorops import add, euler_to_rotation_matrix
+from cmlibs.maths.vectorops import add, euler_to_rotation_matrix, mult, sub
 from cmlibs.utils.zinc.general import ChangeManager, HierarchicalChangeManager
-from cmlibs.utils.zinc.field import get_group_list
+from cmlibs.utils.zinc.field import get_group_list, find_or_create_field_group
 from cmlibs.utils.zinc.group import group_add_group_local_contents
 from cmlibs.utils.zinc.scene import scene_clear_selection_group, scene_get_or_create_selection_group
 from cmlibs.zinc.field import Field, FieldGroup
@@ -22,6 +22,9 @@ class SegmentationStitcherModel(object):
     """
     Geometric fit model adding visualisations to github.com/ABI-Software/scaffoldfitter
     """
+
+    _EMPTY_GROUP_NAME = "<empty>"
+    _RAW_CENTRE_COORDINATES_FIELD_NAME = "<centre>"
 
     def __init__(self, segmentation_file_locations, location, step_identifier,
                  network_group_1_keywords, network_group2_keywords, endpoints_file_locations=None):
@@ -77,17 +80,13 @@ class SegmentationStitcherModel(object):
             "display_theme": "Dark"
         }
         self._load_settings()
+        self._current_segment = None
+        self._setup_segments()
         self.create_graphics()
-        segments = self._stitcher.get_segments()
-        for segment in segments:
-            self._set_segment_scene_transformation(segment)
-        self._current_segment = segments[0] if segments else None
         connections = self._stitcher.get_connections()
         self._current_connection = connections[0] if connections else None
         self._current_annotation = None
         self._segment_data_change_callback = None
-
-    _EMPTY_GROUP_NAME = "<empty>"
 
     def _init_graphics_modules(self):
         context = self._stitcher.get_context()
@@ -136,6 +135,25 @@ class SegmentationStitcherModel(object):
         tessellationmodule = context.getTessellationmodule()
         default_tessellation = tessellationmodule.getDefaultTessellation()
         default_tessellation.setRefinementFactors([12])
+
+    def _setup_segments(self):
+        """
+        Set up fields and transformations used for graphics.
+        """
+        segments = self._stitcher.get_segments()
+        with HierarchicalChangeManager(self._stitcher.get_root_region()):
+            for segment in segments:
+                raw_region = segment.get_raw_region()
+                raw_fieldmodule = raw_region.getFieldmodule()
+                # create '<empty>' group in all raw regions to show nothing when a required group doesn't exist there
+                find_or_create_field_group(raw_fieldmodule, self._EMPTY_GROUP_NAME, managed=True)
+                # create centre coordinates field for showing bounding box
+                minimums, maximums = segment.get_coordinates_range()
+                centre_coordinates = raw_fieldmodule.createFieldConstant(mult(add(minimums, maximums), 0.5))
+                centre_coordinates.setName(self._RAW_CENTRE_COORDINATES_FIELD_NAME)
+                centre_coordinates.setManaged(True)
+                self._set_segment_scene_transformation(segment)
+        self._current_segment = segments[0] if segments else None
 
     @classmethod
     def get_json_settings_filename(cls, location_stem):
@@ -833,14 +851,6 @@ class SegmentationStitcherModel(object):
         root_scene = root_region.getScene()
         # prepare fields and calculate axis and glyph scaling
         segments = self._stitcher.get_segments()
-        # create '.empty' group in all raw regions to show nothing when a required group doesn't exist there
-        with HierarchicalChangeManager(self._stitcher.get_root_region()):
-            for segment in segments:
-                region = segment.get_raw_region()
-                fieldmodule = region.getFieldmodule()
-                empty_group = fieldmodule.createFieldGroup()
-                empty_group.setName(self._EMPTY_GROUP_NAME)
-                empty_group.setManaged(True)
         mean_segment_length = self._stitcher.get_mean_segment_length()
         glyph_width_small = 0.01 * mean_segment_length
         axes_scale = 1.0
@@ -888,6 +898,7 @@ class SegmentationStitcherModel(object):
                 radius = fieldmodule.findFieldByName("radius")
                 if not radius.isValid():
                     radius = None
+                centre_coordinates = fieldmodule.findFieldByName(self._RAW_CENTRE_COORDINATES_FIELD_NAME)
                 scene = region.getScene()
                 with ChangeManager(scene):
                     scene.removeAllGraphics()
@@ -948,6 +959,17 @@ class SegmentationStitcherModel(object):
                     node_numbers.setVisibilityFlag(self.is_display_node_numbers())
 
                     self._create_category_graphics(segment, scene, coordinates, radius, radius_scale)
+
+                    bounding_box = scene.createGraphicsPoints()
+                    bounding_box.setCoordinateField(centre_coordinates)
+                    minimums, maximums = segment.get_coordinates_range()
+                    pointattr = bounding_box.getGraphicspointattributes()
+                    pointattr.setGlyphShapeType(Glyph.SHAPE_TYPE_CUBE_WIREFRAME)
+                    glyph_base_size = sub(maximums, minimums)
+                    pointattr.setBaseSize(glyph_base_size)
+                    bounding_box.setMaterial(self._materialmodule.findMaterialByName('grey50'))
+                    bounding_box.setName('bounding_box')
+                    bounding_box.setVisibilityFlag(False)
 
                 working_region = segment.get_working_region()
                 working_scene = working_region.getScene()
@@ -1046,6 +1068,17 @@ class SegmentationStitcherModel(object):
         spectrum = spectrummodule.getDefaultSpectrum()
         spectrum.autorange(scene, Scenefilter())
 
+    def _segment_set_bounding_box_graphics_visibility(self, segment, show):
+        """
+        Show or hide segment bounding box graphics.
+        :param segment: Stitcher segment to show or hide coordinates bounding box for.
+        :param show: True to show, False to hide
+        """
+        raw_region = segment.get_raw_region()
+        raw_scene = raw_region.getScene()
+        bounding_box = raw_scene.findGraphicsByName("bounding_box")
+        bounding_box.setVisibilityFlag(show)
+
     # === Align Utilities ===
 
     def isStateAlign(self):
@@ -1068,9 +1101,9 @@ class SegmentationStitcherModel(object):
         self.set_segment_translation(self._current_segment, new_translation)
 
     def interactionStart(self):
-        # print("interactionStart")
-        pass
+        if self._current_segment:
+            self._segment_set_bounding_box_graphics_visibility(self._current_segment, True)
 
     def interactionEnd(self):
-        # print("interactionEnd")
-        pass
+        if self._current_segment:
+            self._segment_set_bounding_box_graphics_visibility(self._current_segment, False)
