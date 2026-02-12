@@ -356,6 +356,13 @@ class SegmentationStitcherModel(object):
         """
         connection.set_link_locking_from_selection(lock)
 
+    def connection_remove_selected_links(self, connection):
+        """
+        Unlock and remove selected links.
+        :param connection: The connection to remove links for.
+        """
+        connection.remove_selected_links()
+
     def connection_add_locked_links_to_selection(self, connection):
         """
         Add locked links for this connection to the scene selection.

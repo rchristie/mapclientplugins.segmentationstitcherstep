@@ -480,6 +480,11 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         if connection:
             self._model.connection_set_link_locking_from_selection(connection, lock)
 
+    def _connections_listWidget_remove_selected_links(self):
+        connection = self._model.get_current_connection()
+        if connection:
+            self._model.connection_remove_selected_links(connection)
+
     def _connections_listWidget_select_locked_links(self):
         connection = self._model.get_current_connection()
         if connection:
@@ -548,12 +553,15 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             action_link_and_lock_selected_ends.setToolTip("Make and lock links between selected end points in segments")
             action_lock_selected_links = menu.addAction("Lock selected links")
             action_lock_selected_links.setToolTip("Lock selected links in this connection until unlocked")
+            action_remove_selected_links = menu.addAction("Remove selected links")
             action_unlock_selected_links = menu.addAction("Unlock selected links")
             action_select_locked_links = menu.addAction("Select locked links")
             action_link_and_lock_selected_ends.triggered.connect(
                 self._connections_listWidget_link_and_lock_selected_ends)
             action_lock_selected_links.triggered.connect(
                 lambda: self._connections_listWidget_set_link_locking_from_selection(True))
+            action_remove_selected_links.triggered.connect(
+                lambda: self._connections_listWidget_remove_selected_links())
             action_unlock_selected_links.triggered.connect(
                 lambda: self._connections_listWidget_set_link_locking_from_selection(False))
             action_select_locked_links.triggered.connect(self._connections_listWidget_select_locked_links)
