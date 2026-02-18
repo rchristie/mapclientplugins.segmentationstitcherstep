@@ -72,35 +72,52 @@ class Ui_SegmentationStitcherWidget(object):
 
         self.verticalLayout_2.addWidget(self.segments_listWidget)
 
-        self.segmentTransformation_groupBox = QGroupBox(self.segments_groupBox)
-        self.segmentTransformation_groupBox.setObjectName(u"segmentTransformation_groupBox")
-        sizePolicy.setHeightForWidth(self.segmentTransformation_groupBox.sizePolicy().hasHeightForWidth())
-        self.segmentTransformation_groupBox.setSizePolicy(sizePolicy)
-        self.formLayout = QFormLayout(self.segmentTransformation_groupBox)
-        self.formLayout.setObjectName(u"formLayout")
-        self.formLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
-        self.segmentRotation_label = QLabel(self.segmentTransformation_groupBox)
+        self.segmentData_groupBox = QGroupBox(self.segments_groupBox)
+        self.segmentData_groupBox.setObjectName(u"segmentData_groupBox")
+        sizePolicy.setHeightForWidth(self.segmentData_groupBox.sizePolicy().hasHeightForWidth())
+        self.segmentData_groupBox.setSizePolicy(sizePolicy)
+        self.verticalLayout_3 = QVBoxLayout(self.segmentData_groupBox)
+        self.verticalLayout_3.setSpacing(6)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(-1, 6, -1, -1)
+        self.segmentTransformation_frame = QFrame(self.segmentData_groupBox)
+        self.segmentTransformation_frame.setObjectName(u"segmentTransformation_frame")
+        self.segmentTransformation_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.segmentTransformation_frame.setFrameShadow(QFrame.Shadow.Plain)
+        self.formLayout_6 = QFormLayout(self.segmentTransformation_frame)
+        self.formLayout_6.setObjectName(u"formLayout_6")
+        self.formLayout_6.setVerticalSpacing(3)
+        self.formLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.segmentRotation_label = QLabel(self.segmentTransformation_frame)
         self.segmentRotation_label.setObjectName(u"segmentRotation_label")
 
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.segmentRotation_label)
+        self.formLayout_6.setWidget(1, QFormLayout.LabelRole, self.segmentRotation_label)
 
-        self.segmentRotation_lineEdit = QLineEdit(self.segmentTransformation_groupBox)
+        self.segmentRotation_lineEdit = QLineEdit(self.segmentTransformation_frame)
         self.segmentRotation_lineEdit.setObjectName(u"segmentRotation_lineEdit")
 
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.segmentRotation_lineEdit)
+        self.formLayout_6.setWidget(1, QFormLayout.FieldRole, self.segmentRotation_lineEdit)
 
-        self.segmentTranslation_label = QLabel(self.segmentTransformation_groupBox)
+        self.segmentTranslation_label = QLabel(self.segmentTransformation_frame)
         self.segmentTranslation_label.setObjectName(u"segmentTranslation_label")
 
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.segmentTranslation_label)
+        self.formLayout_6.setWidget(4, QFormLayout.LabelRole, self.segmentTranslation_label)
 
-        self.segmentTranslation_lineEdit = QLineEdit(self.segmentTransformation_groupBox)
+        self.segmentTranslation_lineEdit = QLineEdit(self.segmentTransformation_frame)
         self.segmentTranslation_lineEdit.setObjectName(u"segmentTranslation_lineEdit")
 
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.segmentTranslation_lineEdit)
+        self.formLayout_6.setWidget(4, QFormLayout.FieldRole, self.segmentTranslation_lineEdit)
 
 
-        self.verticalLayout_2.addWidget(self.segmentTransformation_groupBox)
+        self.verticalLayout_3.addWidget(self.segmentTransformation_frame)
+
+        self.segmentIgnoreOrientation_checkBox = QCheckBox(self.segmentData_groupBox)
+        self.segmentIgnoreOrientation_checkBox.setObjectName(u"segmentIgnoreOrientation_checkBox")
+
+        self.verticalLayout_3.addWidget(self.segmentIgnoreOrientation_checkBox)
+
+
+        self.verticalLayout_2.addWidget(self.segmentData_groupBox)
 
 
         self.verticalLayout.addWidget(self.segments_groupBox)
@@ -563,7 +580,7 @@ class Ui_SegmentationStitcherWidget(object):
 #if QT_CONFIG(tooltip)
         self.segments_listWidget.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Right-click for segments menu</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.segmentTransformation_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Transformation:", None))
+        self.segmentData_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Segment data:", None))
         self.segmentRotation_label.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Rotation:", None))
 #if QT_CONFIG(tooltip)
         self.segmentRotation_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Euler angle rotations in degrees about z, y', x' for the selected segment above.</p><p>To set interactively: with the mouse pointer in the graphics area, hold down the A-key and left mouse button and drag to rotate the segment about the axis normal to the drag in the window plane. Translation will also be affected.</p></body></html>", None))
@@ -572,6 +589,10 @@ class Ui_SegmentationStitcherWidget(object):
 #if QT_CONFIG(tooltip)
         self.segmentTranslation_lineEdit.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Translation in x, y, z for the selected segment above.</p><p>To set interactively: with the mouse points in the graphics area, hold down the A-key and middle mouse button and drag to translate.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.segmentIgnoreOrientation_checkBox.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Tick this if the orientation data for this segment is incorrect. This puts it into the 'orientation ignore' annotation group so later workflow steps can ignore it.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.segmentIgnoreOrientation_checkBox.setText(QCoreApplication.translate("SegmentationStitcherWidget", u"Ignore orientation data", None))
         self.connections_groupBox.setTitle(QCoreApplication.translate("SegmentationStitcherWidget", u"Connections:", None))
 #if QT_CONFIG(tooltip)
         self.connections_listWidget.setToolTip(QCoreApplication.translate("SegmentationStitcherWidget", u"<html><head/><body><p>Right-click for connections menu</p></body></html>", None))

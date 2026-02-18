@@ -102,7 +102,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="segmentTransformation_groupBox">
+           <widget class="QGroupBox" name="segmentData_groupBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -110,37 +110,77 @@
              </sizepolicy>
             </property>
             <property name="title">
-             <string>Transformation:</string>
+             <string>Segment data:</string>
             </property>
-            <layout class="QFormLayout" name="formLayout">
-             <property name="fieldGrowthPolicy">
-              <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <property name="spacing">
+              <number>6</number>
              </property>
-             <item row="1" column="0">
-              <widget class="QLabel" name="segmentRotation_label">
-               <property name="text">
-                <string>Rotation:</string>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QFrame" name="segmentTransformation_frame">
+               <property name="frameShape">
+                <enum>QFrame::Shape::NoFrame</enum>
                </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Plain</enum>
+               </property>
+               <layout class="QFormLayout" name="formLayout_6">
+                <property name="verticalSpacing">
+                 <number>3</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="segmentRotation_label">
+                  <property name="text">
+                   <string>Rotation:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="segmentRotation_lineEdit">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Euler angle rotations in degrees about z, y', x' for the selected segment above.&lt;/p&gt;&lt;p&gt;To set interactively: with the mouse pointer in the graphics area, hold down the A-key and left mouse button and drag to rotate the segment about the axis normal to the drag in the window plane. Translation will also be affected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="segmentTranslation_label">
+                  <property name="text">
+                   <string>Translation:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLineEdit" name="segmentTranslation_lineEdit">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Translation in x, y, z for the selected segment above.&lt;/p&gt;&lt;p&gt;To set interactively: with the mouse points in the graphics area, hold down the A-key and middle mouse button and drag to translate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QLineEdit" name="segmentRotation_lineEdit">
+             <item>
+              <widget class="QCheckBox" name="segmentIgnoreOrientation_checkBox">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Euler angle rotations in degrees about z, y', x' for the selected segment above.&lt;/p&gt;&lt;p&gt;To set interactively: with the mouse pointer in the graphics area, hold down the A-key and left mouse button and drag to rotate the segment about the axis normal to the drag in the window plane. Translation will also be affected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tick this if the orientation data for this segment is incorrect. This puts it into the 'orientation ignore' annotation group so later workflow steps can ignore it.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="segmentTranslation_label">
                <property name="text">
-                <string>Translation:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="segmentTranslation_lineEdit">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Translation in x, y, z for the selected segment above.&lt;/p&gt;&lt;p&gt;To set interactively: with the mouse points in the graphics area, hold down the A-key and middle mouse button and drag to translate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>Ignore orientation data</string>
                </property>
               </widget>
              </item>

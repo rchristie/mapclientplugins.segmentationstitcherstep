@@ -59,11 +59,6 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             background_colour_rgb = [1.0, 1.0, 1.0] if (theme_name == 'Light') else [0.0, 0.0, 0.0]
             sceneviewer.setBackgroundColourRGB(background_colour_rgb)
 
-    def _transformation_changed(self):
-        # self._ui.segmentRotation_lineEdit.setText(self._model.getRotationText())
-        # self._ui.segmentTranslation_lineEdit.setText(self._model.getTranslationText())
-        pass
-
     def _make_connections(self):
         self._ui.alignmentsceneviewerwidget.graphicsInitialized.connect(self._graphics_initialized)
         self._ui.documentation_pushButton.clicked.connect(self._documentation_buttonClicked)
@@ -74,6 +69,7 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.segments_listWidget.customContextMenuRequested.connect(self._segments_listWidget_contextMenu)
         self._ui.segmentRotation_lineEdit.editingFinished.connect(self._segmentRotation_lineEditChanged)
         self._ui.segmentTranslation_lineEdit.editingFinished.connect(self._segmentTranslation_lineEditChanged)
+        self._ui.segmentIgnoreOrientation_checkBox.clicked.connect(self._segmentIgnoreOrientation_clicked)
 
         self._ui.connections_listWidget.customContextMenuRequested.connect(self._connections_listWidget_contextMenu)
 
@@ -359,6 +355,8 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
         self._ui.segmentRotation_lineEdit.setText(", ".join(realFormat.format(value) for value in rotation))
         translation = segment.get_translation()
         self._ui.segmentTranslation_lineEdit.setText(", ".join(realFormat.format(value) for value in translation))
+        ignore_orientation = segment.is_ignore_orientation()
+        self._ui.segmentIgnoreOrientation_checkBox.setChecked(ignore_orientation)
 
     def _segments_listWidget_set_all_visibility(self, visible):
         stitcher = self._model.get_stitcher()
@@ -416,6 +414,10 @@ class SegmentationStitcherWidget(QtWidgets.QWidget):
             self._model.set_segment_translation(segment, translation)
         else:
             self._refresh_segment_data()
+
+    def _segmentIgnoreOrientation_clicked(self):
+        segment = self._model.get_current_segment()
+        segment.set_ignore_orientation(self._ui.segmentIgnoreOrientation_checkBox.isChecked())
 
     def _build_connections_list(self):
         """
