@@ -2,6 +2,7 @@
 MAP Client Plugin Step
 """
 import json
+import os
 import pathlib
 
 from PySide6 import QtGui, QtWidgets, QtCore
@@ -28,12 +29,39 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
                        'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
                        'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
                       ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#exf_file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                        'http://physiomeproject.org/workflow/1.0/rdf-schema#uses-list-of',
-                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location')
-                      ])
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
-                      'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
-                      'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'))
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses-list-of',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#exf_file_location')])
+        self.addPort([('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#exf_file_location')])
+        self.addPort([('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#json_file_location')])
+        # optional list of json end points in slicer markups format
+        self.addPort([('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#json_file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses-list-of',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'),
+                      ('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses-list-of',
+                       'http://physiomeproject.org/workflow/1.0/rdf-schema#json_file_location')])
         # Config:
         self._config = {
             'identifier': '',
@@ -41,7 +69,11 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
             'network group 2 keywords': ['fascicle']
         }
         # Port data:
-        self._segmentation_file_locations = None  # file_location
+        self._port0_input_segmentation_file_locations = None  # list of exf_file_location
+        # following are only set on successful execution of step
+        self._port1_output_segmentation_file_location = None  # exf_file_location
+        self._port2_output_json_settings_file_location = None  # json_file_location
+        self._port3_input_json_endpoints_file_locations = None  # json_file_location
         self._model = None
         self._view = None
 
@@ -53,14 +85,28 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
         """
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.CursorShape.WaitCursor)
         try:
+            self._port1_output_segmentation_file_location = None  # exf_file_location
+            self._port2_output_json_settings_file_location = None  # json_file_location
             self._model = SegmentationStitcherModel(
-                self._segmentation_file_locations, self._location, self._config['identifier'],
-                self._config['network group 1 keywords'], self._config['network group 2 keywords'])
+                self._port0_input_segmentation_file_locations, self._location, self._config['identifier'],
+                self._config['network group 1 keywords'], self._config['network group 2 keywords'],
+                self._port3_input_json_endpoints_file_locations)
             self._view = SegmentationStitcherWidget(self._model)
-            self._view.register_done_callback(self._doneExecution)
+            self._view.register_done_callback(self._my_done_execution)
             self._setCurrentWidget(self._view)
         finally:
             QtWidgets.QApplication.restoreOverrideCursor()
+
+    def _my_done_execution(self):
+        location_stem = os.path.join(self._location, self._config['identifier'])
+        # important that these are only set on successful execution:
+        self._port1_output_segmentation_file_location = \
+            SegmentationStitcherModel.get_output_segmentation_filename(location_stem)
+        self._port2_output_json_settings_file_location = \
+            SegmentationStitcherModel.get_json_settings_filename(location_stem)
+        self._view = None
+        self._model = None
+        self._doneExecution()
 
     def setPortData(self, index, dataIn):
         """
@@ -71,10 +117,14 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
         :param index: Index of the port to return.
         :param dataIn: The data to set for the port at the given index.
         """
-        if not isinstance(dataIn, list):
-            dataIn = [dataIn]
-
-        self._segmentation_file_locations = [pathlib.PureWindowsPath(p).as_posix() for p in dataIn]  # file_location
+        if index in (0, 3):
+            if not isinstance(dataIn, list):
+                dataIn = [dataIn]
+            if index == 0:
+                # list of exf_file_location:
+                self._port0_input_segmentation_file_locations = [pathlib.PureWindowsPath(p).as_posix() for p in dataIn]
+            elif index == 3:
+                self._port3_input_json_endpoints_file_locations = [pathlib.PureWindowsPath(p).as_posix() for p in dataIn]
 
     def getPortData(self, index):
         """
@@ -84,8 +134,11 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
 
         :param index: Index of the port to return.
         """
-        # http://physiomeproject.org/workflow/1.0/rdf-schema#file_location
-        return self._model.get_output_segmentation_file_name()
+        if index == 1:
+            return self._port1_output_segmentation_file_location
+        if index == 2:
+            return self._port2_output_json_settings_file_location
+        return None
 
     def configure(self):
         """
@@ -139,3 +192,6 @@ class SegmentationStitcherStep(WorkflowStepMountPoint):
         d.identifierOccursCount = self._identifierOccursCount
         d.setConfig(self._config)
         self._configured = d.validate()
+
+    def getAdditionalConfigFiles(self):
+        return SegmentationStitcherModel.get_config_files(os.path.join(self._location, self._config['identifier']))

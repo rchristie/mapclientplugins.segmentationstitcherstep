@@ -17,7 +17,7 @@ class NewConnectionDialog(QtWidgets.QDialog):
         self._setup()
 
     def _setup(self):
-        self.setWindowTitle("New Connection...")
+        self.setWindowTitle("Create new connection...")
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setSizePolicy(sizePolicy)
         self.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
@@ -26,8 +26,8 @@ class NewConnectionDialog(QtWidgets.QDialog):
         self.setModal(True)
 
         segment_tips = [
-            "Base segment for transforming and stitching second segment relative to.",
-            "Dependent segment to transform and stitch to first segment."
+            "First segment to output in connection",
+            "Second segment to output in connection"
         ]
         all_segments = self._stitcher.get_segments()
         for chooser_index in range(2):
