@@ -3,7 +3,7 @@
 MAP Client Plugin - Generated from MAP Client v0.21.4
 """
 
-__version__ = '0.1.1'
+__version__ = '0.2.0'
 __author__ = 'Richard Christie'
 __stepname__ = 'Segmentation Stitcher'
 __location__ = 'https://github.com/ABI-Software/mapclientplugins.segmentationstitcherstep'
